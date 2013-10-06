@@ -1,15 +1,16 @@
 /*
-********************************************************************************************************************
+******************************************************************************
 *
 * Programme : libliste.c
 *
-* Auteurs : Christophe SAUVAGE et Mustafa Ndiaye
+* Auteurs : Christophe SAUVAGE et Mustafa NDIAYE
 *
-* Résumé : Bibliothèque permettant de créer et gérer des listes circulaire doublement chaînées
-*          avec sentinelle.
+* Résumé : Bibliothèque permettant de créer et gérer des listes circulaires
+*          doublement chaînées avec sentinelle.
 *
-* Date : 02/10/2013
-********************************************************************************************************************
+* Date : 06/10/2013
+*
+******************************************************************************
 */
 
 
@@ -19,50 +20,100 @@
 #include <string.h>
 #include "libliste.h"
 
-/*
-* DECLARER LES INCLUDE DANS .h OU PAS ???
-*/
-
-/*
-* VERIFIER QUE LES POINTEURS NE SONT PAS NULL ETC...
-*/
-
-
-/* La fonction peut également s'utiliser en dehors du fichier ??? quel utilité du .h alors ???*/
-TypVoisins* creerTypVoisins (int voisin, int poidsVoisin,TypVoisins** voisinSuivant, TypVoisins** voisinPrecedent) {
-	TypVoisins* res;
+	
+	/*
+	* Fonction : creerTypVoisins
+	*
+	* Paramètres : int voisin, le numéro du voisin à créer
+	*              int poids, le poids du voisin à créer
+	*              TypVoisins** vS, le voisin qui suivra dans la
+	*					liste le voisin créé
+	*              TypVoisins** vP, le voisin qui précédera dans
+	*					la liste le voisin créé
+	*
+	* Retour : TypVoisins*, pointeur sur le voisin nouvellement créé
+	*
+	* Description : Crée et renvoie un nouveau voisin dont les données 
+	*               (numéro et poids) sont passées en paramètres,
+	*               et lie ce voisin aux deux voisins passés en paramètres
+	*/
+static TypVoisins* creerTypVoisins(int voisin, int poids, TypVoisins** vS,
+															TypVoisins** vP) {
+	TypVoisins *res;	/* Pointeur sur le voisin nouvellement créé */
+	
 	res = malloc(sizeof(TypVoisins));
 	res->voisin = voisin;
-	res->poidsVoisin = poidsVoisin;
-	res->voisinSuivant = *voisinSuivant;
-	res->voisinPrecedent = *voisinPrecedent;
+	res->poidsVoisin = poids;
+	res->voisinSuivant = *vS;
+	res->voisinPrecedent = *vP;
+	
 	return res;
 }
 
-/*Créer une liste avec une sentinelle ayant pour numéro et poids -1*/
-TypVoisins* creerListe () {
-	TypVoisins* res;
+
+	/*
+	* Fonction : creerListe
+	*
+	* Retour : TypVoisins*, pointeur sur le début de la liste nouvellement créée
+	*
+	* Description : Crée une nouvelle liste et renvoie un pointeur pointant au 
+	*               début de celle-ci.
+	*               La sentinelle y est insérée et a pour numéro et poids -1.
+	*/
+TypVoisins* creerListe() {
+	TypVoisins *res;	/* Pointeur sur la liste créée */
+	
+	// Création de la sentinelle
 	res = creerTypVoisins(-1,-1,&res,&res);
 	res->voisinSuivant = res;
 	res->voisinPrecedent = res;
+	
 	return res;
 }
 
-/* ajoute un voisin à fin de la liste*/
-void ajouterVoisin (TypVoisins** liste, int nouveauVoisin, int poidsNouveauVoisin) {
-	TypVoisins* vS = *liste;
-	TypVoisins* vP = vS->voisinPrecedent;
-	TypVoisins* vC = creerTypVoisins(nouveauVoisin,poidsNouveauVoisin,&vS,&vP);
+
+	/*
+	* Fonction : ajouterVoisin
+	*
+	* Paramètres : TypVoisins** liste, le début de la liste à laquelle on veut 
+	*					ajouter un nouveau voisin
+	*              int voisin, le numéro du nouveau voisin à insérer
+	*              int poids, le poids du nouveau voisin à insérer
+	*
+	* Description : Ajoute un nouveau voisin à la fin de la liste passée 
+	*				en paramètre
+	*/
+void ajouterVoisin(TypVoisins** liste, int voisin, int poids) {
+	TypVoisins *vS;		/* Le voisin suivant le voisin nouvellement créé */
+	TypVoisins *vP;		/* Le voisin précédent le voisin nouvellement créé */
+	TypVoisins *vC;		/* Le nouveau voisin ajouté en fin de liste */
+	
+	vS = *liste;
+	vP = vS->voisinPrecedent;
+	vC = creerTypVoisins(voisin,poids,&vS,&vP);
 	vP->voisinSuivant = vC;
 	vS->voisinPrecedent = vC;
 }
 
-void supprimerVoisin (TypVoisins** liste, int voisinASupprimer) {
+
+	/*
+	* Fonction : supprimerVoisin
+	*
+	* Paramètres : TypVoisins** liste, pointeur sur le début d'une liste
+	*              int voisinASupprimer, le numéro du voisin à supprimer
+	*
+	* Description : Supprime le voisin demandé dans la liste passée 
+	*				en paramètre. Ne fait rien s'il ne s'y trouve pas.
+	*/
+void supprimerVoisin(TypVoisins** liste, int voisinASupprimer) {
 	if (voisinASupprimer != -1)
 	{
-		TypVoisins *vC, *vP, *vS;
-		bool trouve;
+		TypVoisins *vC;    /* Le voisin courant lors du parcours de la liste */
+		TypVoisins *vP;    /* Le voisin précédent de l'élément à supprimer */
+		TypVoisins *vS;    /* Le voisin suivant de l'élément à supprimer */
+		bool 	   trouve; /* Vrai si le voisin à supprimer existe */
 		
+		// On cherche le voisin dans la liste
 		vC = voisinSuivant(liste);
 		trouve = false;
 		while (!trouve && vC != *liste) {
@@ -72,7 +123,8 @@ void supprimerVoisin (TypVoisins** liste, int voisinASupprimer) {
 				vC = voisinSuivant(&vC);
 		}
 		
-		if (trouve) {
+		// Si le voisin est trouvé, on le supprime de la liste
+		if (trouve == true) {
 			vP = voisinPrecedent(&vC);
 			vS = voisinSuivant(&vC);
 			vP->voisinSuivant = vS;
@@ -82,51 +134,138 @@ void supprimerVoisin (TypVoisins** liste, int voisinASupprimer) {
 	}
 }
 
-int numeroVoisin (TypVoisins** voisin) {
+
+	/*
+	* Fonction : numeroVoisin
+	*
+	* Paramètres : TypVoisins** voisin, un élément d'une liste
+	*
+	* Retour : int, le numéro du voisin passé en paramètre
+	*
+	* Description : Renvoie le numéro du voisin passé en paramètre
+	*/
+int numeroVoisin(TypVoisins** voisin) {
 	return (*voisin)->voisin;
 }
 
-int poidsVoisin (TypVoisins** voisin) {
+
+	/*
+	* Fonction : poidsVoisin
+	*
+	* Paramètres : TypVoisins** voisin, un élément d'une liste
+	*
+	* Retour : int, le poids du voisin passé en paramètre
+	*
+	* Description : Renvoie le poids du voisin passé en paramètre
+	*/
+int poidsVoisin(TypVoisins** voisin) {
 	return (*voisin)->poidsVoisin;
 }
 
-TypVoisins* voisinSuivant (TypVoisins** voisin) {
+
+	/*
+	* Fonction : voisinSuivant
+	*
+	* Paramètres : TypVoisins** voisin, un élément d'une liste
+	*
+	* Retour : TypVoisins*, pointeur sur le voisin suivant de l'élément 
+	*				passé en paramètre
+	*
+	* Description : Renvoie un pointeur sur le voisin suivant dans la liste de 
+	*				l'élément passé en paramètre
+	*/
+TypVoisins* voisinSuivant(TypVoisins** voisin) {
 	return (*voisin)->voisinSuivant;
 }
 
-TypVoisins* voisinPrecedent (TypVoisins** voisin) {
+
+	/*
+	* Fonction : voisinPrecedent
+	*
+	* Paramètres : TypVoisins** voisin, un élément d'une liste
+	*
+	* Retour : TypVoisins*, pointeur sur le voisin précédent de l'élément 
+	*				passé en paramètre
+	*
+	* Description : Renvoie un pointeur sur le voisin précédent dans la liste de
+	*				l'élément passé en paramètre
+	*/
+TypVoisins* voisinPrecedent(TypVoisins** voisin) {
 	return (*voisin)->voisinPrecedent;
 }
 
-/* La sentinelle ne compte pas dans la taille de la liste*/
-int tailleListe (TypVoisins** liste) {
-	TypVoisins* voisinCourant = voisinSuivant(liste);
-	int res = 0;
-	while (voisinCourant != *liste) {
+
+	/*
+	* Fonction : tailleListe
+	*
+	* Paramètres : TypVoisins** liste, pointeur sur le début d'une liste
+	*
+	* Retour : int, la taille de la liste passée en paramètre
+	*
+	* Description : Renvoie la taille de la liste passée en paramètre.
+	*/
+int tailleListe(TypVoisins** liste) {
+	TypVoisins *vC;		/* Le voisin courant lors du parcours de la liste */
+	int        res;		/* La taille de la liste */
+	
+	// La sentinelle n'est pas prise en compte dans le calcul
+	vC = voisinSuivant(liste);
+	res = 0;
+	while (vC != *liste) {
 		res++;
-		voisinCourant = voisinSuivant(&voisinCourant);
+		vC = voisinSuivant(&vC);
 	}
+	
 	return res;
 }
 
-/* Renvoie true si le numéro du voisin demandé est présent dans la liste*/
-bool voisinExiste (TypVoisins** liste, int voisin) {
-	TypVoisins* voisinCourant = voisinSuivant(liste);
-	bool trouve = false;
-	while (!trouve && voisinCourant != *liste) {
-		if (numeroVoisin(&voisinCourant) == voisin)
+
+	/*
+	* Fonction : voisinExiste
+	*
+	* Paramètres : TypVoisins** liste, le début d'une liste
+	*			   int voisin, numéro du voisin dont on veut connaître 
+	*					l'existence dans la liste
+	*
+	* Retour : bool, true si le voisin existe dans la liste, sinon false
+	*
+	* Description : Vérifie si le voisin demandé existe dans la liste passée en
+	*				paramètre.
+	*/
+bool voisinExiste(TypVoisins** liste, int voisin) {
+	TypVoisins *vC;    /* Le voisin courant lors du parcours de la liste */
+	bool       trouve; /* true si le voisin existe dans la liste */
+	
+	vC = voisinSuivant(liste);
+	trouve = false;
+	while (!trouve && vC != *liste) {
+		if (numeroVoisin(&vC) == voisin)
 			trouve = true;
-		voisinCourant = voisinSuivant(&voisinCourant);
+		vC = voisinSuivant(&vC);
 	}
+	
 	return trouve;
 }
 
-/* Renvoie la représentation de la liste passée en paramètre sous la forme :
- (2/3), (4,6)  avec une liste comportant 2 voisins numérotés 2 et 4 et ayant pour poids 3 et 6
- fonctionne mais modifier ou pas ? (faire un malloc ? un realloc à la fin ?)*/
-char* toString (TypVoisins** liste) {
-	char *res, *tmp;
-	TypVoisins* vC;
+
+	/*
+	* Fonction : toString
+	*
+	* Paramètres : TypVoisins** liste, le début d'une liste
+	*
+	* Retour : char*, une chaîne représentant le contenu de la liste
+	*
+	* Description : Renvoie la représentation de la liste passée en paramètre
+	*				sous la forme "(2,3), (4,6)" pour une liste comportant deux 
+	*				voisins numérotés 2 et 4 et ayant pour poids 3 et 6.
+	*				Renvoie une chaîne vide si la liste est vide.
+	*/
+char* toString(TypVoisins** liste) {
+	char       *res; /* La chaîne représentant la liste */
+	char       *tmp; /* Chaîne utilisée pour la construction de res */
+	TypVoisins *vC;  /* Le voisin courant lors du parcours de la liste */
+	
+	
 	res = malloc(256);
 	tmp = malloc(256);
 	
@@ -140,5 +279,6 @@ char* toString (TypVoisins** liste) {
 		strcat(res,tmp);
 		vC = voisinSuivant(&vC);
 	}
+	
 	return res;
 }
