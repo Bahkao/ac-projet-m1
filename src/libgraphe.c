@@ -1,3 +1,18 @@
+/*
+******************************************************************************
+*
+* Programme : libliste.c
+*
+* Auteurs : Christophe SAUVAGE et Mustafa NDIAYE
+*
+* Résumé : Bibliothèque permettant de créer et gérer des listes circulaires
+*          doublement chaînées avec sentinelle.
+*
+* Date : 06/10/2013
+*
+******************************************************************************
+*/
+
 #include <stdlib.h>
 #include <stdio.h>
 #include<string.h>
