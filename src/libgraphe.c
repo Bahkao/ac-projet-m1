@@ -19,7 +19,7 @@
 #include "libgraphe.h"
 #include "libliste.h"
 
-
+/*Fonction création */
 
 int creerGraphe ( TypGraphe* graphe, int nbrMaxSommets ) {
 
