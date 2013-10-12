@@ -10,24 +10,26 @@ typedef struct TypVoisins {
 	struct TypVoisins* voisinPrecedent;
 } TypVoisins;
 
-TypVoisins* creerListe ();
+TypVoisins* creerListe();
 
-void ajouterVoisin (TypVoisins**,int,int);
+void supprimerListe(TypVoisins**);
 
-void supprimerVoisin (TypVoisins**,int);
+void ajouterVoisin(TypVoisins**,int,int);
 
-int numeroVoisin (TypVoisins**);
+void supprimerVoisin(TypVoisins**,int);
 
-int poidsVoisin (TypVoisins**);
+int numeroVoisin(TypVoisins**);
 
-TypVoisins* voisinSuivant (TypVoisins**);
+int poidsVoisin(TypVoisins**);
 
-TypVoisins* voisinPrecedent (TypVoisins**);
+TypVoisins* voisinSuivant(TypVoisins**);
 
-int tailleListe (TypVoisins**);
+TypVoisins* voisinPrecedent(TypVoisins**);
 
-bool voisinExiste (TypVoisins**,int);
+int tailleListe(TypVoisins**);
 
-char* toString (TypVoisins**);
+bool voisinExiste(TypVoisins**,int);
+
+char* toString(TypVoisins**);
 
 #endif

@@ -37,8 +37,7 @@
 	*               (numéro et poids) sont passées en paramètres,
 	*               et lie ce voisin aux deux voisins passés en paramètres
 	*/
-static TypVoisins* creerTypVoisins(int voisin, int poids, TypVoisins** vS,
-															TypVoisins** vP) {
+static TypVoisins* creerTypVoisins(int voisin, int poids, TypVoisins** vS, TypVoisins** vP) {
 	TypVoisins *res;	/* Pointeur sur le voisin nouvellement créé */
 	
 	res = malloc(sizeof(TypVoisins));
@@ -69,6 +68,26 @@ TypVoisins* creerListe() {
 	res->voisinPrecedent = res;
 	
 	return res;
+}
+
+
+	/*
+	* Fonction : supprimerListe
+	*
+	* Paramètre : TypVoisins** liste, le début de la liste à supprimer
+	*
+	* Description : Supprime tous les voisins de la liste passée en paramètre
+	*				et désalloue la mémoire de celle-ci.
+	*/
+void supprimerListe(TypVoisins** liste) {
+	TypVoisins *vC;		/* Le voisin courant lors du parcours de la liste */
+	
+	vC = voisinSuivant(liste);
+	while (vC != *liste) {
+		supprimerVoisin(liste,numeroVoisin(&vC));
+		vC = voisinSuivant(liste);
+	}
+	free(*liste);
 }
 
 
@@ -254,6 +273,7 @@ bool voisinExiste(TypVoisins** liste, int voisin) {
 	* Paramètres : TypVoisins** liste, le début d'une liste
 	*
 	* Retour : char*, une chaîne représentant le contenu de la liste
+	*					(mémoire allouée dans la fonction)
 	*
 	* Description : Renvoie la représentation de la liste passée en paramètre
 	*				sous la forme "(2,3), (4,6)" pour une liste comportant deux 
@@ -265,9 +285,8 @@ char* toString(TypVoisins** liste) {
 	char       *tmp; /* Chaîne utilisée pour la construction de res */
 	TypVoisins *vC;  /* Le voisin courant lors du parcours de la liste */
 	
-	
-	res = malloc(256);
-	tmp = malloc(256);
+	res = malloc(500);
+	tmp = malloc(25);
 	
 	vC = voisinSuivant(liste);
 	sprintf(res,"(%d,%d)",numeroVoisin(&vC),poidsVoisin(&vC));
@@ -279,6 +298,10 @@ char* toString(TypVoisins** liste) {
 		strcat(res,tmp);
 		vC = voisinSuivant(&vC);
 	}
+	
+	free(tmp);
+	tmp = realloc(res,strlen(res)+1);
+	res = tmp;
 	
 	return res;
 }
