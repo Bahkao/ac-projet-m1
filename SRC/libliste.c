@@ -8,7 +8,7 @@
 * Résumé : Bibliothèque permettant de créer et gérer des listes circulaires
 *          doublement chaînées avec sentinelle.
 *
-* Date : 06/10/2013
+* Date : 10/10/2013
 *
 ******************************************************************************
 */
@@ -88,6 +88,7 @@ void supprimerListe(TypVoisins** liste) {
 		vC = voisinSuivant(liste);
 	}
 	free(*liste);
+	*liste = NULL;
 }
 
 
@@ -289,7 +290,11 @@ char* toString(TypVoisins** liste) {
 	tmp = malloc(25);
 	
 	vC = voisinSuivant(liste);
-	sprintf(res,"(%d,%d)",numeroVoisin(&vC),poidsVoisin(&vC));
+	
+	if (vC != *liste)
+		sprintf(res,"(%d,%d)",numeroVoisin(&vC),poidsVoisin(&vC));
+	else
+		return "";
 	
 	vC = voisinSuivant(&vC);
 	
