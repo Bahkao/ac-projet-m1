@@ -15,9 +15,11 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include<string.h>
+#include <string.h>
+#include <stdbool.h>
 #include "libgraphe.h"
 #include "libliste.h"
+#include "erreurs.h"
 
 /*Fonction création */
 
@@ -89,29 +91,105 @@ int sommetExistant ( TypGraphe * graphe, int numSommet ) {
 }
 
 
+int areteExistante (TypGraphe *graphe, int depart, int arrivee) {
+	if (graphe->listesAdjacences == NULL)
+		return GRAPHE_INEXISTANT;
+	else {
+		if (sommetExistant(graphe,depart) == 0 && sommetExistant(graphe,arrivee) == 0) {
+			if (voisinExiste(graphe->listesAdjacences[depart],arrivee) == true)
+				return 0;
+			else
+				return SOMMET_INEXISTANT;
+		}
+		else
+			return SOMMET_INEXISTANT;
+	}
+}
+
+
 int suppressionSommet ( TypGraphe* graphe, int sommet ) {
-
- return 0;
+	int i;
   
+	if (graphe->listesAdjacences == NULL)
+		return GRAPHE_INEXISTANT;
+	else {
+		if (sommetExistant(graphe,sommet) == 0) {
+			supprimerListe(graphe->listesAdjacences[sommet]);
+			for (i = 0; i <= graphe->nbrMaxSommets; i++) {
+				if (graphe->listesAdjacences[i] != NULL)
+					supprimerVoisin(graphe->listesAdjacences[i],sommet);
+			}
+			return 0;
+		}
+		else
+			return SOMMET_INEXISTANT;
+	}
 }
 
 
-int insertionAreteOriente ( TypGraphe* graphe, int de, int vers, int poids ) {
-	return 0;
+int insertionAreteOriente ( TypGraphe* graphe, int depart, int arrivee, int poids ) {
+	if (graphe->listesAdjacences == NULL)
+		return GRAPHE_INEXISTANT;
+	else {
+		if (sommetExistant(graphe,depart) == 0 && sommetExistant(graphe,arrivee) == 0) {
+			ajouterVoisin(graphe->listesAdjacences[depart],arrivee,poids);
+			return 0;
+		}
+		else
+			return SOMMET_INEXISTANT;
+	}
 }
 
-int insertionAreteNonOriente ( TypGraphe* graphe, int de, int vers, int poids ) {
-return 0;
+int insertionAreteNonOriente ( TypGraphe* graphe, int depart, int arrivee, int poids ) {
+	if (graphe->listesAdjacences == NULL)
+		return GRAPHE_INEXISTANT;
+	else {
+		if (sommetExistant(graphe,depart) == 0 && sommetExistant(graphe,arrivee) == 0) {
+			ajouterVoisin(graphe->listesAdjacences[depart],arrivee,poids);
+			ajouterVoisin(graphe->listesAdjacences[arrivee],depart,poids);
+			return 0;
+		}
+		else
+			return SOMMET_INEXISTANT;
+	}
 }
 
-
-int suppressionArete ( TypGraphe* graphe, int de, int vers, char orientation ) {
-return 0;
+/* orientation : 'o' (arête orientée) ou 'n' (non orientée) */
+int suppressionArete ( TypGraphe* graphe, int depart, int arrivee, char orientation ) {
+	if (graphe->listesAdjacences == NULL)
+		return GRAPHE_INEXISTANT;
+	else {
+		if (sommetExistant(graphe,depart) == 0 && sommetExistant(graphe,arrivee) == 0) {
+			if (orientation == 'o') {
+				if (areteExistante(graphe,depart,arrivee) == 0) {
+					supprimerVoisin(graphe->listesAdjacences[depart],arrivee);
+					return 0;
+				}
+				else
+				return ARETE_INEXISTANTE;
+			}
+			else {
+				if (areteExistante(graphe,depart,arrivee) == 0 && areteExistante(graphe,arrivee,depart)) {
+					supprimerVoisin(graphe->listesAdjacences[depart],arrivee);
+					supprimerVoisin(graphe->listesAdjacences[arrivee],depart);
+					return 0;
+				}
+				else
+					return ARETE_INEXISTANTE;
+			}
+		}
+		else
+			return SOMMET_INEXISTANT;
+	}
 }
+
 
 void deleteGraphe ( TypGraphe* graphe ) {
 
 }
+/*
+
 void saveGraphe (TypGraphe* graphe,FILE *fichier){  
     	
  }
+*/
