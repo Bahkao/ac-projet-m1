@@ -1,5 +1,5 @@
 /*
- *Auhor  Christian Sauvage & Ndiaye Moustapha
+ *Auhor  Christophe Sauvage & Ndiaye Moustapha
  */
 
 #ifndef libgraphe_H
@@ -13,15 +13,22 @@ typedef struct TypGraphe{
 	        
 } TypGraphe;
 
+TypGraphe* creerGraphe(int);
 
-int creerGraphe(TypGraphe*, int);
-int supprimmerSommet(int);
 int suppressionSommet ( TypGraphe*, int);
+
 int insertionAreteOriente ( TypGraphe*, int, int, int);
+
 int insertionAreteNonOriente ( TypGraphe*, int, int, int);
+
 int suppressionArete ( TypGraphe*, int, int, char);
 
+int sommetExistant (TypGraphe*,int);
+
+int areteExistante (TypGraphe*,int,int);
+
 void deleteGraphe ( TypGraphe* );
-void saveGraphe (TypGraphe* ,FILE *);
+
+//void saveGraphe (TypGraphe* ,FILE *);
 
 #endif
