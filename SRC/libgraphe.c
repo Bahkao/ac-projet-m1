@@ -183,9 +183,21 @@ int suppressionArete ( TypGraphe* graphe, int depart, int arrivee, char orientat
 }
 
 
+// Supprime toute la mémoire allouée pour l'ensemble du graphe
 void deleteGraphe ( TypGraphe* graphe ) {
-
+	int i;
+	
+	// Suppression de tous les sommets (donc de toutes les listes)
+	for (i = 0; i < graphe->nbrMaxSommets; i++)
+		suppressionSommet(graphe,i+1);
+		
+	// Libération de la mémoire occupée par le tableau
+	free(graphe->listesAdjacences);
+	
+	//Libération de la mémoire occupée par le graphe
+	free(graphe);
 }
+
 /*
 
 void saveGraphe (TypGraphe* graphe,FILE *fichier){  
