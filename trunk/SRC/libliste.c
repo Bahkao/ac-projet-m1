@@ -310,3 +310,37 @@ char* toString(TypVoisins** liste) {
 	
 	return res;
 }
+
+/*
+ *******************************************************************************
+ *	Fonction:	afficherListeFichier
+ *
+ *	Paramettre :	TypVoisins* listeSommets	:est un pointeur sur TypVoisins
+ *			FILE *fichier			: est un pointeur sur FILE
+ *			
+ *
+ *	Retour:		rien 
+ *
+ *	Description:	affiche la liste d'un fichier
+ ********************************************************************************
+ */
+void afficherListeFichier(TypVoisins* listeSommets, FILE *fichier){
+
+	if ( listeSommets->voisin != -1 ) {
+        	
+        	fprintf(fichier,"(%d/%d)", listeSommets->voisin, listeSommets->poidsVoisin );
+   	 }
+   	 
+   	 if ( listeSommets->voisinSuivant->voisin != -1 ) {
+        	
+        	if ( listeSommets->voisin != -1 ) {
+           		
+           		fprintf(fichier, ", " );
+        	}
+
+       		afficherListeFichier(listeSommets->voisinSuivant,fichier);
+    	}
+    	else {
+        	fprintf(fichier, "\n" );
+    	}
+}

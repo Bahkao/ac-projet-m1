@@ -31,5 +31,5 @@ int tailleListe(TypVoisins**);
 bool voisinExiste(TypVoisins**,int);
 
 char* toString(TypVoisins**);
-
+void afficherListeFichier(TypVoisins*, FILE *);
 #endif
