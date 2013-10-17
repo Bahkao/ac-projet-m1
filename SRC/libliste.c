@@ -62,7 +62,7 @@ static TypVoisins* creerTypVoisins(int voisin, int poids, TypVoisins** vS, TypVo
 TypVoisins* creerListe() {
 	TypVoisins *res;	/* Pointeur sur la liste créée */
 	
-	// Création de la sentinelle
+	/* Création de la sentinelle*/
 	res = creerTypVoisins(-1,-1,&res,&res);
 	res->voisinSuivant = res;
 	res->voisinPrecedent = res;
@@ -133,7 +133,7 @@ void supprimerVoisin(TypVoisins** liste, int voisinASupprimer) {
 		TypVoisins *vS;    /* Le voisin suivant de l'élément à supprimer */
 		bool 	   trouve; /* Vrai si le voisin à supprimer existe */
 		
-		// On cherche le voisin dans la liste
+		/* On cherche le voisin dans la liste*/
 		vC = voisinSuivant(liste);
 		trouve = false;
 		while (!trouve && vC != *liste) {
@@ -143,7 +143,7 @@ void supprimerVoisin(TypVoisins** liste, int voisinASupprimer) {
 				vC = voisinSuivant(&vC);
 		}
 		
-		// Si le voisin est trouvé, on le supprime de la liste
+		/* Si le voisin est trouvé, on le supprime de la liste*/
 		if (trouve == true) {
 			vP = voisinPrecedent(&vC);
 			vS = voisinSuivant(&vC);
@@ -228,7 +228,7 @@ int tailleListe(TypVoisins** liste) {
 	TypVoisins *vC;		/* Le voisin courant lors du parcours de la liste */
 	int        res;		/* La taille de la liste */
 	
-	// La sentinelle n'est pas prise en compte dans le calcul
+	/* La sentinelle n'est pas prise en compte dans le calcul*/
 	vC = voisinSuivant(liste);
 	res = 0;
 	while (vC != *liste) {

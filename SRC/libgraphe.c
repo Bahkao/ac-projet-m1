@@ -24,14 +24,14 @@
 #include "erreurs.h"
 
 
-// on considère en fait que c'est dans le programme principal que l'on va tester si un graphe est déjà créé ou non
+/* on considère en fait que c'est dans le programme principal que l'on va tester si un graphe est déjà créé ou non
 //
 // Exemple de création d'un graphe dans le main :
 // TypGraphe* graphe;
 // graphe = creerGraphe(7);
 //
 // insertionSommet(graphe,2);
-// ...
+// ...*/
 TypGraphe* creerGraphe(int nbrMaxSommets) {
 	int i;
 	TypGraphe* graphe;
@@ -183,18 +183,55 @@ int suppressionArete ( TypGraphe* graphe, int depart, int arrivee, char orientat
 }
 
 
-// Supprime toute la mémoire allouée pour l'ensemble du graphe
+/*
+ *******************************************************************************
+ *	Fonction:	affichage
+ *
+ *	Paramettre :	TypGraphe * graphe      : est un pointeur sur TypGraphe
+ *			
+ *
+ *	Retour:		rien
+ *
+ *	Description:	affichage d'un graphe
+ ********************************************************************************
+ */
+void affichage ( TypGraphe* graphe ) {
+
+	int i;
+	graphe = malloc(sizeof(TypGraphe));
+	printf ( "# nombre maximum de sommets\n" );
+	printf ( "%d",graphe->nbrMaxSommets );
+	printf ( "\n" );
+	printf ( "# sommets : voisins\n" );
+	
+	for ( i=0; i< graphe->nbrMaxSommets; i++ ) {
+	
+		printf ( "%d : ", i+1 );
+		if ( graphe->listesAdjacences[i] != NULL ) {
+    
+			toString ( graphe->listesAdjacences[ i ] );
+		}
+		else{
+			printf( "\n" );
+		}
+		
+	}
+  
+}
+
+
+/* Supprime toute la mémoire allouée pour l'ensemble du graphe*/
 void deleteGraphe ( TypGraphe* graphe ) {
 	int i;
 	
-	// Suppression de tous les sommets (donc de toutes les listes)
+	/* Suppression de tous les sommets (donc de toutes les listes)*/
 	for (i = 0; i < graphe->nbrMaxSommets; i++)
 		suppressionSommet(graphe,i+1);
 		
-	// Libération de la mémoire occupée par le tableau
+	/* Libération de la mémoire occupée par le tableau*/
 	free(graphe->listesAdjacences);
 	
-	//Libération de la mémoire occupée par le graphe
+	/*Libération de la mémoire occupée par le graphe*/
 	free(graphe);
 }
 

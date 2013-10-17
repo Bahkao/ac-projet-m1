@@ -11,7 +11,7 @@
 void menu_principale (){
 	TypGraphe* graphe;
 	char chaine[3];
-	int tmp,choix,j;
+	int tmp,choix;
 	
 	printf(  "##########################################\n" );
         printf(  "#             MENU PRINCIPALE            #\n" );
@@ -28,7 +28,7 @@ void menu_principale (){
 			scanf("%s",chaine);
 			sscanf(chaine,"%d",&tmp);
 			graphe = malloc(sizeof(TypGraphe));
-			j = creerGraphe(graphe, tmp);
+			creerGraphe(tmp);
 			break;
 		case 2 : 
 			exit(0);
@@ -52,7 +52,7 @@ void menu_principale (){
 void sous_menu(){
 	
 	int choix;
-	
+	TypGraphe* graphe = malloc(sizeof(TypGraphe));
 	printf(  "##########################################\n" );
         printf(  "#                 SOUS MENU              #\n" );
         printf(  "##########################################\n" );
@@ -70,7 +70,8 @@ void sous_menu(){
 	switch (choix){
 	case 1 :
 		printf("Afficher le graphe\n ");
-		
+		affichage ( graphe );
+		break;
 	case 2 :
 		printf("Inserer un sommet\n");
 		printf("Saisir le numéro du sommet\n");

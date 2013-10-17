@@ -29,6 +29,8 @@ int areteExistante (TypGraphe*,int,int);
 
 void deleteGraphe ( TypGraphe* );
 
-//void saveGraphe (TypGraphe* ,FILE *);
+void affichage ( TypGraphe*);
+
+/*void saveGraphe (TypGraphe* ,FILE *);*/
 
 #endif
