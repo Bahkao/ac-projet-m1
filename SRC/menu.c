@@ -52,6 +52,8 @@ void menu_principale (){
 void sous_menu(){
 	
 	int choix;
+	FILE *fichier;
+	char chemin[ 256 ];
 	TypGraphe* graphe = malloc(sizeof(TypGraphe));
 	printf(  "##########################################\n" );
         printf(  "#                 SOUS MENU              #\n" );
@@ -91,6 +93,16 @@ void sous_menu(){
 	case 6 :
 		
 		printf("Sauvegarder le graphe\n");
+		if(graphe != NULL){
+			printf("saisir le nom de fichier: \n");
+			scanf("%s",chemin);
+			fichier = fopen( chemin, "w" );
+			sauvegarde(graphe,fichier);
+			fclose( fichier );
+		}
+		else{
+			printf( "Pas de graphe en cours\n" );
+		}
 		break;
            
 	case 8 :

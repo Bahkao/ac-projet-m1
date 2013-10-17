@@ -240,9 +240,7 @@ void sauvegarde (TypGraphe* graphe,FILE *fichier){
 	if ( graphe == NULL ) {
         	
         	fprintf( stderr, "graphe inexistant\n" );
-        
     	}
-    	
     	fprintf( fichier, "# nombre maximum de sommets\n%d\n# sommets : voisins\n", graphe->nbrMaxSommets );
     	
     	for ( i = 1; i <= graphe->nbrMaxSommets ; i++ ) {
@@ -254,14 +252,9 @@ void sauvegarde (TypGraphe* graphe,FILE *fichier){
             		afficherListeFichier( graphe->listesAdjacences[ i ], fichier );
         	}
         	else{
-        	
         		fprintf(fichier,"\n");
-        	}
-        	
-        	
+        	}	
     	}
-    
-    	
  }
  
 
