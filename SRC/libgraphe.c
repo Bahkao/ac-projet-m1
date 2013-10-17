@@ -220,6 +220,51 @@ void affichage ( TypGraphe* graphe ) {
 }
 
 
+
+/*
+ *******************************************************************************
+ *	Fonction:	sauvegarde
+ *
+ *	Paramettre :	TypGraphe * graphe : est un pointeur sur TypGraphe
+ *			FILE *fichier	   : est un pointeur sur FILE
+ *
+ *	Retour:		rien
+ *
+ *	Description:	sauvegarder le graphe dans un fichier
+ ********************************************************************************
+ */
+void sauvegarde (TypGraphe* graphe,FILE *fichier){
+
+	int i ;
+	
+	if ( graphe == NULL ) {
+        	
+        	fprintf( stderr, "graphe inexistant\n" );
+        
+    	}
+    	
+    	fprintf( fichier, "# nombre maximum de sommets\n%d\n# sommets : voisins\n", graphe->nbrMaxSommets );
+    	
+    	for ( i = 1; i <= graphe->nbrMaxSommets ; i++ ) {
+        	
+        	fprintf( fichier, "%d : ", i );
+        	
+        	if ( graphe->listesAdjacences[ i ] != NULL ) {
+            		
+            		afficherListeFichier( graphe->listesAdjacences[ i ], fichier );
+        	}
+        	else{
+        	
+        		fprintf(fichier,"\n");
+        	}
+        	
+        	
+    	}
+    
+    	
+ }
+ 
+
 /* Supprime toute la mémoire allouée pour l'ensemble du graphe*/
 void deleteGraphe ( TypGraphe* graphe ) {
 	int i;
