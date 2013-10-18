@@ -1,7 +1,7 @@
 /*
 ******************************************************************************
 *
-* Programme : libliste.c
+* Programme : libgraphe.c
 *
 * Auteurs : Christophe SAUVAGE et Mustafa NDIAYE
 *
@@ -10,7 +10,7 @@
 *          On considère que pour un graphe, listesAdjacences[0] désigne le
 *          sommet 1, listesAdjacences[1] le sommet 2 etc...
 *
-* Date : 10/10/2013
+* Date : 18/10/2013
 *
 ******************************************************************************
 */
@@ -24,17 +24,20 @@
 #include "erreurs.h"
 
 
-/* on considère en fait que c'est dans le programme principal que l'on va tester si un graphe est déjà créé ou non
-//
-// Exemple de création d'un graphe dans le main :
-// TypGraphe* graphe;
-// graphe = creerGraphe(7);
-//
-// insertionSommet(graphe,2);
-// ...*/
+	/*
+	* Fonction : creerGraphe
+	*
+	* Paramètres : int nbrMaxSommets, le nombre maximal de sommets que pourra 
+	*                 contenir le graphe
+	*
+	* Retour : TypGraphe*, pointeur sur le graphe créé
+	*
+	* Description : Crée un graphe vide et le renvoie. La mémoire pour celui-ci
+	*               est allouée dans la fonction.
+	*/
 TypGraphe* creerGraphe(int nbrMaxSommets) {
-	int i;
-	TypGraphe* graphe;
+	int        i;      /* Permet le parcours du tableau de listes */
+	TypGraphe* graphe; /* Le graphe créé */
 	
 	graphe = malloc(sizeof(TypGraphe));
 	graphe->nbrMaxSommets = nbrMaxSommets;
@@ -48,6 +51,17 @@ TypGraphe* creerGraphe(int nbrMaxSommets) {
 }
 
 
+	/*
+	* Fonction : insertionSommet
+	*
+	* Paramètres : TypGraphe *graphe, pointeur sur un graphe déjà créé
+	*			   int idSommet, le numéro du sommet à insérer
+	*
+	* Retour : int, renvoie 0 si le sommet est inséré sinon renvoie un 
+	*             code d'erreur (voir erreurs.h)
+	*
+	* Description : Ajoute un sommet dans le graphe
+	*/
 int insertionSommet ( TypGraphe *graphe, int idSommet ) {
 	
 	if ( graphe->listesAdjacences == NULL ) {
@@ -68,8 +82,17 @@ int insertionSommet ( TypGraphe *graphe, int idSommet ) {
 }
 
 
-
-
+	/*
+	* Fonction : sommetExistant
+	*
+	* Paramètres : TypGraphe *graphe, pointeur sur un graphe déjà créé
+	*			   int numSommet, le numéro du sommet à rechercher
+	*
+	* Retour : int, 0 si le sommet est trouvé sinon renvoie un 
+	*            code d'erreur (voir erreurs.h)
+	*
+	* Description : Vérifie si le sommet est présent dans le graphe
+	*/
 int sommetExistant ( TypGraphe * graphe, int numSommet ) {
 
 	if ( graphe->listesAdjacences == NULL ) {
@@ -90,6 +113,18 @@ int sommetExistant ( TypGraphe * graphe, int numSommet ) {
 }
 
 
+	/*
+	* Fonction : areteExistante
+	*
+	* Paramètres : TypGraphe *graphe, pointeur sur un graphe déjà créé
+	*			   int depart, le sommet de départ de l'arête
+	*              int arrivee, le sommet sur lequel pointe l'arête
+	*
+	* Retour : int, renvoie 0 si l'arête est trouvée sinon renvoie un 
+	*             code d'erreur (voir erreurs.h)
+	*
+	* Description : Vérifie si une arête existe dans le graphe
+	*/
 int areteExistante (TypGraphe *graphe, int depart, int arrivee) {
 	if (graphe->listesAdjacences == NULL)
 		return GRAPHE_INEXISTANT;
@@ -106,8 +141,19 @@ int areteExistante (TypGraphe *graphe, int depart, int arrivee) {
 }
 
 
+	/*
+	* Fonction : suppressionSommet
+	*
+	* Paramètres : TypGraphe *graphe, pointeur sur un graphe déjà créé
+	*			   int sommet, le numéro du sommet à supprimer
+	*
+	* Retour : int, renvoie 0 si le sommet est supprimé sinon renvoie un 
+	*             code d'erreur (voir erreurs.h)
+	*
+	* Description : Supprime un sommet du graphe
+	*/
 int suppressionSommet ( TypGraphe* graphe, int sommet ) {
-	int i;
+	int i;  /* Permet le parcours du tableau du graphe */
   
 	if (graphe->listesAdjacences == NULL)
 		return GRAPHE_INEXISTANT;
@@ -126,6 +172,20 @@ int suppressionSommet ( TypGraphe* graphe, int sommet ) {
 }
 
 
+	/*
+	* Fonction : insertionAreteOriente
+	*
+	* Paramètres : TypGraphe *graphe, pointeur sur un graphe déjà créé
+	*			   int depart, le sommet de depart de l'arête
+	*              int arrivee, le sommet sur lequel pointe l'arête
+	*              int poids, le poids de l'arête
+	*
+	* Retour : int, renvoie 0 si l'arête est insérée sinon renvoie un 
+	*             code d'erreur (voir erreurs.h)
+	*
+	* Description : Ajoute une arête orientée dans le graphe. Cela suppose
+	*               que les sommets soient déjà insérés dans le graphe.
+	*/
 int insertionAreteOriente ( TypGraphe* graphe, int depart, int arrivee, int poids ) {
 	if (graphe->listesAdjacences == NULL)
 		return GRAPHE_INEXISTANT;
@@ -139,6 +199,21 @@ int insertionAreteOriente ( TypGraphe* graphe, int depart, int arrivee, int poid
 	}
 }
 
+
+	/*
+	* Fonction : insertionAreteNonOriente
+	*
+	* Paramètres : TypGraphe *graphe, pointeur sur un graphe déjà créé
+	*			   int depart, un sommet du graphe
+	*              int arrivee, un sommet du graphe
+	*              int poids, le poids de l'arête
+	*
+	* Retour : int, renvoie 0 si l'arête est insérée sinon renvoie un 
+	*             code d'erreur (voir erreurs.h)
+	*
+	* Description : Ajoute une arête non orientée dans le graphe. Cela suppose
+	*               que les sommets soient déjà insérés dans le graphe.
+	*/
 int insertionAreteNonOriente ( TypGraphe* graphe, int depart, int arrivee, int poids ) {
 	if (graphe->listesAdjacences == NULL)
 		return GRAPHE_INEXISTANT;
@@ -153,7 +228,19 @@ int insertionAreteNonOriente ( TypGraphe* graphe, int depart, int arrivee, int p
 	}
 }
 
-/* orientation : 'o' (arête orientée) ou 'n' (non orientée) */
+	/*
+	* Fonction : suppressionArete
+	*
+	* Paramètres : TypGraphe *graphe, pointeur sur un graphe déjà créé
+	*			   int depart, le sommet de départ de l'arête
+	*              int arrivee, le sommet sur lequel pointe l'arête
+	*              char orientation, 'o' si l'arête est orientée, sinon 'n'
+	*
+	* Retour : int, renvoie 0 si l'arête est supprimée sinon renvoie un 
+	*             code d'erreur (voir erreurs.h)
+	*
+	* Description : Supprime une arête  dans le graphe
+	*/
 int suppressionArete ( TypGraphe* graphe, int depart, int arrivee, char orientation ) {
 	if (graphe->listesAdjacences == NULL)
 		return GRAPHE_INEXISTANT;
@@ -198,7 +285,7 @@ int suppressionArete ( TypGraphe* graphe, int depart, int arrivee, char orientat
 void affichage ( TypGraphe* graphe ) {
 
 	int i;
-	graphe = malloc(sizeof(TypGraphe));
+	
 	printf ( "# nombre maximum de sommets\n" );
 	printf ( "%d",graphe->nbrMaxSommets );
 	printf ( "\n" );
@@ -209,11 +296,10 @@ void affichage ( TypGraphe* graphe ) {
 		printf ( "%d : ", i+1 );
 		if ( graphe->listesAdjacences[i] != NULL ) {
     
-			toString ( graphe->listesAdjacences[ i ] );
+			printf("%s",toString(&(graphe->listesAdjacences[i])));
 		}
-		else{
-			printf( "\n" );
-		}
+		
+		printf( "\n" );
 		
 	}
   
@@ -258,9 +344,18 @@ void sauvegarde (TypGraphe* graphe,FILE *fichier){
  }
  
 
-/* Supprime toute la mémoire allouée pour l'ensemble du graphe*/
+	/*
+	* Fonction : deleteGraphe
+	*
+	* Paramètres : TypGraphe *graphe, pointeur sur un graphe déjà créé
+	*
+	* Retour : void
+	*
+	* Description : Supprime le graphe passé en paramètre. Toute la mémoire qui 
+	*               lui avait été allouée est libérée.
+	*/
 void deleteGraphe ( TypGraphe* graphe ) {
-	int i;
+	int i;  /* Permet le parcours des sommets du graphe */
 	
 	/* Suppression de tous les sommets (donc de toutes les listes)*/
 	for (i = 0; i < graphe->nbrMaxSommets; i++)
