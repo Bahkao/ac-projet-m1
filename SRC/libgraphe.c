@@ -306,7 +306,6 @@ void affichage ( TypGraphe* graphe ) {
 }
 
 
-
 /*
  *******************************************************************************
  *	Fonction:	sauvegarde
@@ -323,25 +322,24 @@ void sauvegarde (TypGraphe* graphe,FILE *fichier){
 
 	int i ;
 	
-	if ( graphe == NULL ) {
-        	
-        	fprintf( stderr, "graphe inexistant\n" );
-    	}
-    	fprintf( fichier, "# nombre maximum de sommets\n%d\n# sommets : voisins\n", graphe->nbrMaxSommets );
-    	
-    	for ( i = 1; i <= graphe->nbrMaxSommets ; i++ ) {
-        	
-        	fprintf( fichier, "%d : ", i );
-        	
-        	if ( graphe->listesAdjacences[ i ] != NULL ) {
-            		
-            		afficherListeFichier( graphe->listesAdjacences[ i ], fichier );
-        	}
-        	else{
-        		fprintf(fichier,"\n");
-        	}	
-    	}
- }
+	if ( graphe == NULL ) {  	
+		fprintf( stderr, "graphe inexistant\n" );
+	}
+	
+	fprintf( fichier, "# nombre maximum de sommets\n%d\n# sommets : voisins\n", graphe->nbrMaxSommets );
+	
+	for ( i = 0; i < graphe->nbrMaxSommets ; i++ ) {
+		
+		fprintf( fichier, "%d : ", i+1 );
+		
+		if ( graphe->listesAdjacences[ i ] != NULL ) {
+				
+				afficherListeFichier( graphe->listesAdjacences[ i ], fichier );
+		}
+		
+		fprintf(fichier,"\n");	
+	}
+}
  
 
 	/*
@@ -367,10 +365,3 @@ void deleteGraphe ( TypGraphe* graphe ) {
 	/*Libération de la mémoire occupée par le graphe*/
 	free(graphe);
 }
-
-/*
-
-void saveGraphe (TypGraphe* graphe,FILE *fichier){  
-    	
- }
-*/

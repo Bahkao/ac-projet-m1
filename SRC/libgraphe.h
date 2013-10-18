@@ -30,7 +30,7 @@ int areteExistante (TypGraphe*,int,int);
 void deleteGraphe ( TypGraphe* );
 
 void affichage ( TypGraphe*);
+
 void sauvegarde (TypGraphe*,FILE *);
-/*void saveGraphe (TypGraphe* ,FILE *);*/
 
 #endif
