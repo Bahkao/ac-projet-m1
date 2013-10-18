@@ -325,22 +325,5 @@ char* toString(TypVoisins** liste) {
  ********************************************************************************
  */
 void afficherListeFichier(TypVoisins* listeSommets, FILE *fichier){
-
-	if ( listeSommets->voisin != -1 ) {
-        	
-        	fprintf(fichier,"(%d/%d)", listeSommets->voisin, listeSommets->poidsVoisin );
-   	 }
-   	 
-   	 if ( listeSommets->voisinSuivant->voisin != -1 ) {
-        	
-        	if ( listeSommets->voisin != -1 ) {
-           		
-           		fprintf(fichier, ", " );
-        	}
-
-       		afficherListeFichier(listeSommets->voisinSuivant,fichier);
-    	}
-    	else {
-        	fprintf(fichier, "\n" );
-    	}
+	fprintf(fichier,"%s",toString(&listeSommets));
 }
