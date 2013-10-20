@@ -7,9 +7,10 @@
 #include "libliste.h"
 
 
+TypGraphe* graphe;
+
 
 void menu_principale (){
-	TypGraphe* graphe;
 	char chaine[3];
 	int tmp,choix;
 	
@@ -27,8 +28,7 @@ void menu_principale (){
 			printf("Taper le nombre maximum de sommets:  \n");
 			scanf("%s",chaine);
 			sscanf(chaine,"%d",&tmp);
-			graphe = malloc(sizeof(TypGraphe));
-			creerGraphe(tmp);
+			graphe = creerGraphe(tmp);
 			break;
 		case 2 : 
 			exit(0);
@@ -54,7 +54,6 @@ void sous_menu(){
 	int choix;
 	FILE *fichier;
 	char chemin[ 256 ];
-	TypGraphe* graphe = malloc(sizeof(TypGraphe));
 	printf(  "##########################################\n" );
         printf(  "#                 SOUS MENU              #\n" );
         printf(  "##########################################\n" );
