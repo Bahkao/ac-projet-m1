@@ -365,3 +365,78 @@ void deleteGraphe ( TypGraphe* graphe ) {
 	/*Libération de la mémoire occupée par le graphe*/
 	free(graphe);
 }
+
+
+TypGraphe* lecture ( char nomFichier[80] ) {
+	char chemin[ 80 ] = "../ac-projet-m1/lecture/";
+	int maxSommets = 0;
+        int sommetCourant = 0;
+        int vers = 0, poids = 0;
+        int m, i =0, k=0, t=0;
+        char buffer[ 512 ];
+	int tabSommet[ 100 ]; /* Tableau pour stocker tous les sommets du graphe */
+	int tabArete[ 100 ][ 100 ];/* Tableau pour stocker tous les aretes du graphe */
+	TypGraphe* graphe;
+	FILE *fichier = NULL;
+	graphe = malloc ( sizeof ( TypGraphe ) );
+	tabSommet [ maxSommets ] = 0;/* Initialisation du tableau tabSommet */
+	memset ( *tabArete, 0, sizeof ( tabArete ) );/* Initialisation du tableau tabArete */
+	strcat ( chemin, nomFichier );
+	printf ( "%s", chemin );
+	fichier = fopen ( chemin, "r+" );/*Ouverture du fichier en mode lecture*/
+	printf ( "%s", chemin );
+	if ( fichier == NULL ) {
+		printf ( "Erreur d'ouverture du fichier\n" );
+	}
+	else {
+		if ( fgets ( buffer, 512, fichier ) != NULL ) {
+			fscanf ( fichier, "%d", &maxSommets );/*récupération du nombre max de sommet*/
+			if ( maxSommets > 0 ) {
+				graphe = creerGraphe(maxSommets );/* Création du graphe si le nbrSommet est positif*/
+				fgets ( buffer, 512, fichier );
+				fgets ( buffer, 512, fichier );
+				while ( !feof ( fichier ) ) {/* parcours du fichier pour récupérer les sommet et les arêtes */
+					fscanf ( fichier, "%d : ", &sommetCourant );
+					if ( sommetCourant <= maxSommets ) {
+						if ( sommetCourant != tabSommet[ i - 1 ] ) {
+							tabSommet[ i ] = sommetCourant;
+							i++;
+						}
+						if ( fscanf ( fichier, "(%d,%d),", &vers, &poids ) == 2 ) {
+							if ( vers <= maxSommets ) {
+								tabArete[ k ][ 0 ] = sommetCourant;
+								tabArete[ k ][ 1 ] = vers;
+								tabArete[ k ][ 2 ] = poids;
+								k++;	
+							}
+							else {
+								printf ( "erreur dans le fichier 1\n" );	
+							}
+						}
+					}
+					else{
+						printf ( "erreur dans le fichier 2\n" );	
+					}
+				}
+				for ( t = 0; t < i; t++ ) {
+					m = insertionSommet ( graphe, tabSommet[ t ] );/* Insertion des sommets dans le graphe*/	
+				}
+				for ( t = 0; t < k; t++ ) {
+					m = insertionAreteOriente ( graphe, tabArete[ t ][ 0 ],tabArete[ t ][ 1 ], tabArete[ t ][ 2 ] );
+				}	
+			}
+			else{
+				printf ( "Le nombre maximum de sommets est incorrect !\n" );
+			}	
+		}
+		else{
+			printf ( "Erreur structuration du fichier!\n" );
+		}
+		
+		fclose ( fichier );
+	}
+	
+	
+	return graphe;
+	
+}

@@ -11,7 +11,7 @@ TypGraphe* graphe;
 
 
 void menu_principale (){
-	char chaine[3];
+	char chaine[3], chemin[ 512 ];
 	int tmp,choix;
 	
 	printf(  "##########################################\n" );
@@ -31,7 +31,12 @@ void menu_principale (){
 			graphe = creerGraphe(tmp);
 			break;
 		case 2 : 
-			exit(0);
+			printf( "Entrer le nom du fichier\n" );
+				scanf("%s",chemin);
+				printf("%s",chemin);
+				/*graphe = malloc(sizeof(TypGraphe));*/
+                		graphe = lecture(chemin);
+                		sous_menu();
 			break;
 	
 	}

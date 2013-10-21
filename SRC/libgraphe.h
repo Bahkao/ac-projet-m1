@@ -33,4 +33,6 @@ void affichage ( TypGraphe*);
 
 void sauvegarde (TypGraphe*,FILE *);
 
+TypGraphe* lecture ( char[]);
+
 #endif
