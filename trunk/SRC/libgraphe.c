@@ -368,15 +368,13 @@ void deleteGraphe ( TypGraphe* graphe ) {
 
 
 TypGraphe* lecture ( char nomFichier[80] ) {
-	char chemin[ 80 ] = "../ac-projet-m1/lecture/";
+	TypGraphe* graphe;
+	char buffer[ 512 ],chemin[ 80 ] = "../ac-projet-m1/lecture/";
 	int maxSommets = 0;
         int sommetCourant = 0;
-        int vers = 0, poids = 0;
-        int m, i =0, k=0, t=0;
-        char buffer[ 512 ];
+        int vers = 0, poids = 0, m, i =0, k=0, t=0;
 	int tabSommet[ 100 ]; /* Tableau pour stocker tous les sommets du graphe */
 	int tabArete[ 100 ][ 100 ];/* Tableau pour stocker tous les aretes du graphe */
-	TypGraphe* graphe;
 	FILE *fichier = NULL;
 	graphe = malloc ( sizeof ( TypGraphe ) );
 	tabSommet [ maxSommets ] = 0;/* Initialisation du tableau tabSommet */
