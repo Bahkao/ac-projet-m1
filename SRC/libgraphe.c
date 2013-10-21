@@ -366,7 +366,18 @@ void deleteGraphe ( TypGraphe* graphe ) {
 	free(graphe);
 }
 
-
+/*
+ *******************************************************************************
+ *	Fonction:	lecture
+ *
+ *	Paramettre :	char nomFichier[80] : est un tableau de caractére représentant le nom du fichier
+ *			FILE *fichier	   : est un pointeur sur FILE
+ *
+ *	Retour:		graphe
+ *
+ *	Description:	lecture d'un graphe à partir d'un fichier
+ ********************************************************************************
+ */
 TypGraphe* lecture ( char nomFichier[80] ) {
 	TypGraphe* graphe;
 	char buffer[ 512 ],chemin[ 80 ] = "../ac-projet-m1/lecture/";
