@@ -15,6 +15,8 @@ typedef struct TypGraphe{
 
 TypGraphe* creerGraphe(int);
 
+int insertionSommet ( TypGraphe *graphe, int idSommet );
+
 int suppressionSommet ( TypGraphe*, int);
 
 int insertionAreteOriente ( TypGraphe*, int, int, int);
