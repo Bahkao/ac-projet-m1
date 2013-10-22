@@ -35,4 +35,6 @@ void sauvegarde (TypGraphe*,FILE *);
 
 TypGraphe* lecture ( char[]);
 
+int degreSommet(TypGraphe* graphe, int sommet);
+
 #endif

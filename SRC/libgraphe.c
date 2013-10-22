@@ -283,8 +283,7 @@ int suppressionArete ( TypGraphe* graphe, int depart, int arrivee, char orientat
  ********************************************************************************
  */
 void affichage ( TypGraphe* graphe ) {
-
-	int i;
+	int i;  /* Permet le parcours des listes du graphe */
 	
 	printf ( "# nombre maximum de sommets\n" );
 	printf ( "%d",graphe->nbrMaxSommets );
@@ -292,17 +291,14 @@ void affichage ( TypGraphe* graphe ) {
 	printf ( "# sommets : voisins\n" );
 	
 	for ( i=0; i< graphe->nbrMaxSommets; i++ ) {
-	
-		printf ( "%d : ", i+1 );
-		if ( graphe->listesAdjacences[i] != NULL ) {
-    
-			printf("%s",toString(&(graphe->listesAdjacences[i])));
+		if (sommetExistant(graphe,i+1) == 0) {
+			printf ( "%d : ", i+1 );
+		    if ( graphe->listesAdjacences[i] != NULL ) {
+				printf("%s",toString(&(graphe->listesAdjacences[i])));
+		    }
+		    printf( "\n" );
 		}
-		
-		printf( "\n" );
-		
-	}
-  
+	} 
 }
 
 
@@ -319,8 +315,7 @@ void affichage ( TypGraphe* graphe ) {
  ********************************************************************************
  */
 void sauvegarde (TypGraphe* graphe,FILE *fichier){
-
-	int i ;
+	int i ;  /* Permet le parcours des listes du graphe */
 	
 	if ( graphe == NULL ) {  	
 		fprintf( stderr, "graphe inexistant\n" );
@@ -329,15 +324,15 @@ void sauvegarde (TypGraphe* graphe,FILE *fichier){
 	fprintf( fichier, "# nombre maximum de sommets\n%d\n# sommets : voisins\n", graphe->nbrMaxSommets );
 	
 	for ( i = 0; i < graphe->nbrMaxSommets ; i++ ) {
-		
-		fprintf( fichier, "%d : ", i+1 );
-		
-		if ( graphe->listesAdjacences[ i ] != NULL ) {
-				
+		if (sommetExistant(graphe,i+1) == 0) {
+			fprintf( fichier, "%d : ", i+1 );
+		    
+		    if ( graphe->listesAdjacences[ i ] != NULL ) {
 				afficherListeFichier( graphe->listesAdjacences[ i ], fichier );
+		    }
+		    
+		    fprintf(fichier,"\n");	
 		}
-		
-		fprintf(fichier,"\n");	
 	}
 }
  
@@ -365,6 +360,7 @@ void deleteGraphe ( TypGraphe* graphe ) {
 	/*Libération de la mémoire occupée par le graphe*/
 	free(graphe);
 }
+
 
 /*
  *******************************************************************************
@@ -448,4 +444,23 @@ TypGraphe* lecture ( char nomFichier[80] ) {
 	
 	return graphe;
 	
+}
+
+
+	/*
+	* Fonction : degreSommet
+	*
+	* Paramètres : TypGraphe *graphe, pointeur sur un graphe déjà créé
+	*              int sommet, le numéro d'un sommet du graphe
+	*
+	* Retour : int, le degré du sommet
+	*
+	* Description : Renvoie le degré du sommet passé en paramètre. Renvoie 0 
+	*               si le sommet n'existe pas ou n'a pas d'arêtes adjacentes
+	*/
+int degreSommet(TypGraphe* graphe, int sommet) {
+	if (sommetExistant(graphe,sommet) == 0)
+		return tailleListe(&(graphe->listesAdjacences[sommet-1]));
+	else
+		return 0;
 }
