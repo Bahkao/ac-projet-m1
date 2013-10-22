@@ -11,12 +11,13 @@ TypGraphe* graphe;
 
 
 void menu_principale (){
-	char chaine[3], chemin[ 512 ];
-	int tmp,choix;
+	char chaine[3];
+	int tmp;
+	int choix;
 	
 	printf(  "##########################################\n" );
-        printf(  "#             MENU PRINCIPALE            #\n" );
-        printf(  "##########################################\n" );
+    printf(  "#             MENU PRINCIPALE            #\n" );
+    printf(  "##########################################\n" );
 	printf(  "#	1 : Creer un nouveau graphe       #\n");
 	printf(  "#	2 : Charger le graphe             #\n");
 	printf(  "#	3 : Quitter                       #\n");
@@ -29,18 +30,16 @@ void menu_principale (){
 			scanf("%s",chaine);
 			sscanf(chaine,"%d",&tmp);
 			graphe = creerGraphe(tmp);
+			sous_menu();
 			break;
 		case 2 : 
-			printf( "Entrer le nom du fichier\n" );
-				scanf("%s",chemin);
-				printf("%s",chemin);
-                graphe = lecture(chemin);
-                sous_menu();
+			sousMenuChargerGraphe();
+            sous_menu();
 			break;
-	
+		case 3 :
+			exit(0);
+			break;
 	}
-	sous_menu();
-	
 }
 
 /****************************************************
@@ -55,17 +54,6 @@ void menu_principale (){
  */
 void sous_menu(){
 	int choix;
-	FILE *fichier;
-	char chemin[ 256 ];
-	char chaine[256];
-	char cheminSauvegarde[80] = "../ac-projet-m1/lecture/";
-	
-	int numSommet;
-	
-	int areteOrientee;
-	int sommetDepart;
-	int sommetArrive;
-	int poidsArete;
 	
 	printf(  "##########################################\n" );
     printf(  "#                 SOUS MENU              #\n" );
@@ -83,85 +71,140 @@ void sous_menu(){
 	scanf("%d",&choix);
 	switch (choix){
 	case 1 :
-		printf("Afficher le graphe\n ");
-		affichage ( graphe );
+		sousMenuAfficherGraphe();
 		break;
 	case 2 :
-		printf("Insérer un sommet\n");
-        printf("Saisir le numéro du sommet : ");
-		scanf("%s",chaine);
-		numSommet = atoi(chaine);
-		insertionSommet(graphe,numSommet);
+		sousMenuInsererSommet();
 		break;
 	case 3 :
-		printf("Insérer une arête \n");
-        printf( "Est-ce une arête orientée ? \n 1-Oui 0-Non\n" );
-		scanf("%s",chaine);
-		areteOrientee = atoi(chaine);
-		printf("Saisissez le sommet de départ : ");
-		scanf("%s",chaine);
-		sommetDepart = atoi(chaine);
-		printf("Saisissez le sommet d'arrivée : ");
-		scanf("%s",chaine);
-		sommetArrive = atoi(chaine);
-		printf("Saisissez le poids de l'arête : ");
-		scanf("%s",chaine);
-		poidsArete = atoi(chaine);
-		if (areteOrientee == 1)
-			insertionAreteOriente(graphe,sommetDepart,sommetArrive,poidsArete);
-		else
-			insertionAreteNonOriente(graphe,sommetDepart,sommetArrive,poidsArete);
+		sousMenuInsererArete();
 		break;
 	case 4 :
-		printf("Supprimer un sommet\n");
-        printf("Entrer le sommet à supprimer : ");
-		scanf("%s",chaine);
-		numSommet = atoi(chaine);
-		suppressionSommet(graphe,numSommet);
+		sousMenuSupprimerSommet();
         break;
 	case 5 :
-		printf("Supprimer une arête\n");
-		printf( "Est-ce une arête orientée ? \n 1-Oui 0-Non\n" );
-		scanf("%s",chaine);
-		areteOrientee = atoi(chaine);
-        printf("Insérer le sommet de départ : ");
-		scanf("%s",chaine);
-		sommetDepart = atoi(chaine);
-		printf("Insérer le sommet d'arrivée : ");
-		scanf("%s",chaine);
-		sommetArrive = atoi(chaine);
-		if (areteOrientee == 1)
-			suppressionArete(graphe,sommetDepart,sommetArrive,'o');
-		else
-			suppressionArete(graphe,sommetDepart,sommetArrive,'n');
+		sousMenuSupprimerArete();
         break;
 	case 6 :
-		printf("Sauvegarder le graphe\n");
-        if(graphe != NULL) {
-			printf("saisir le nom de fichier: \n");
-            scanf("%s",chemin);
-			strcat(cheminSauvegarde,chemin);
-            fichier = fopen( cheminSauvegarde, "w" );
-            sauvegarde(graphe,fichier);
-            fclose( fichier );
-		}
-        else {
-			printf( "Pas de graphe en cours\n" );
-        }
+		sousMenuSauvegarderGraphe();
         break;
-           
+    case 7 :
+		sousMenuChargerGraphe();
+		break;
 	case 8 :
 		deleteGraphe(graphe);
 		exit(0);
 		break;
-	
 	}
 	sous_menu();
 }
 
 
+void sousMenuAfficherGraphe() {
+	printf("Afficher le graphe\n ");
+	affichage(graphe);
+}
 
 
+void sousMenuInsererSommet() {
+	char chaine[256];
+	int numSommet;
+
+	printf("Insérer un sommet\n");
+	printf("Saisir le numéro du sommet : ");
+	scanf("%s",chaine);
+	numSommet = atoi(chaine);
+	insertionSommet(graphe,numSommet);
+}
 
 
+void sousMenuInsererArete() {
+	char chaine[256];
+	int areteOrientee;
+	int sommetDepart;
+	int sommetArrivee;
+	int poidsArete;
 
+	printf("Insérer une arête \n");
+	printf( "Est-ce une arête orientée ? \n 1-Oui 0-Non\n" );
+	scanf("%s",chaine);
+	areteOrientee = atoi(chaine);
+	printf("Saisissez le sommet de départ : ");
+	scanf("%s",chaine);
+	sommetDepart = atoi(chaine);
+	printf("Saisissez le sommet d'arrivée : ");
+	scanf("%s",chaine);
+	sommetArrivee = atoi(chaine);
+	printf("Saisissez le poids de l'arête : ");
+	scanf("%s",chaine);
+	poidsArete = atoi(chaine);
+	if (areteOrientee == 1)
+		insertionAreteOriente(graphe,sommetDepart,sommetArrivee,poidsArete);
+	else
+		insertionAreteNonOriente(graphe,sommetDepart,sommetArrivee,poidsArete);
+}
+
+
+void sousMenuSupprimerSommet() {
+	char chaine[256];
+	int numSommet;
+
+	printf("Supprimer un sommet\n");
+	printf("Entrer le sommet à supprimer : ");
+	scanf("%s",chaine);
+	numSommet = atoi(chaine);
+	suppressionSommet(graphe,numSommet);
+}
+
+
+void sousMenuSupprimerArete() {
+	char chaine[256];
+	int areteOrientee;
+	int sommetDepart;
+	int sommetArrivee;
+
+	printf("Supprimer une arête\n");
+	printf( "Est-ce une arête orientée ? \n 1-Oui 0-Non\n" );
+	scanf("%s",chaine);
+	areteOrientee = atoi(chaine);
+	printf("Insérer le sommet de départ : ");
+	scanf("%s",chaine);
+	sommetDepart = atoi(chaine);
+	printf("Insérer le sommet d'arrivée : ");
+	scanf("%s",chaine);
+	sommetArrivee = atoi(chaine);
+	if (areteOrientee == 1)
+		suppressionArete(graphe,sommetDepart,sommetArrivee,'o');
+	else
+		suppressionArete(graphe,sommetDepart,sommetArrivee,'n');
+}
+
+
+void sousMenuSauvegarderGraphe() {
+	char chemin[256];
+	char cheminSauvegarde[80] = "../ac-projet-m1/lecture/";
+	FILE* fichier;
+
+	printf("Sauvegarder le graphe\n");
+	if (graphe != NULL) {
+		printf("saisir le nom de fichier: \n");
+		scanf("%s",chemin);
+		strcat(cheminSauvegarde,chemin);
+		fichier = fopen( cheminSauvegarde, "w" );
+		sauvegarde(graphe,fichier);
+		fclose( fichier );
+	}
+	else {
+		printf( "Pas de graphe en cours\n" );
+	}
+}
+
+
+void sousMenuChargerGraphe() {
+	char chemin[512];
+
+	printf( "Entrer le nom du fichier\n" );
+	scanf("%s",chemin);
+	printf("%s",chemin);
+	graphe = lecture(chemin);
+}
