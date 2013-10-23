@@ -279,23 +279,22 @@ bool voisinExiste(TypVoisins** liste, int voisin) {
 	* Description : Renvoie la représentation de la liste passée en paramètre
 	*				sous la forme "(2,3), (4,6)" pour une liste comportant deux 
 	*				voisins numérotés 2 et 4 et ayant pour poids 3 et 6.
-	*				Renvoie une chaîne vide si la liste est vide.
+	*				Renvoie NULL si la liste est vide.
 	*/
 char* toString(TypVoisins** liste) {
 	char       *res; /* La chaîne représentant la liste */
 	char       *tmp; /* Chaîne utilisée pour la construction de res */
 	TypVoisins *vC;  /* Le voisin courant lors du parcours de la liste */
 	
+	vC = voisinSuivant(liste);
+	
+	if (vC == *liste)
+		return NULL;
+	
 	res = malloc(500);
 	tmp = malloc(25);
 	
-	vC = voisinSuivant(liste);
-	
-	if (vC != *liste)
-		sprintf(res,"(%d,%d)",numeroVoisin(&vC),poidsVoisin(&vC));
-	else
-		return "";
-	
+	sprintf(res,"(%d,%d)",numeroVoisin(&vC),poidsVoisin(&vC));
 	vC = voisinSuivant(&vC);
 	
 	while (vC != *liste) {
@@ -325,5 +324,11 @@ char* toString(TypVoisins** liste) {
  ********************************************************************************
  */
 void afficherListeFichier(TypVoisins* listeSommets, FILE *fichier){
-	fprintf(fichier,"%s",toString(&listeSommets));
+	char *chaine;  /* Représente la liste */
+	
+	chaine = toString(&listeSommets);
+	if (chaine != NULL) {
+		fprintf(fichier,"%s",chaine);
+		free(chaine);
+	}
 }

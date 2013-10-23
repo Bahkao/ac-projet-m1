@@ -300,13 +300,14 @@ void affichage ( TypGraphe* graphe ) {
 			printf ( "%d : ", i+1 );
 		    if ( graphe->listesAdjacences[i] != NULL ) {
 				chaine = toString(&(graphe->listesAdjacences[i]));
-				printf("%s",chaine);
+				if (chaine != NULL) {
+					printf("%s",chaine);
+					free(chaine);
+				}
 		    }
 		    printf( "\n" );
 		}
-	} 
-	if (chaine != NULL
-	free(chaine);
+	}
 }
 
 
@@ -386,12 +387,12 @@ TypGraphe* lecture ( char nomFichier[80] ) {
 	TypGraphe* graphe;
 	char buffer[ 512 ],chemin[ 80 ] = "lecture/";
 	int maxSommets = 0;
-        int sommetCourant = 0;
-        int vers = 0, poids = 0, m, i =0, k=0, t=0;
+    int sommetCourant = 0;
+    int vers = 0, poids = 0, m, i =0, k=0, t=0;
 	int tabSommet[ 100 ]; /* Tableau pour stocker tous les sommets du graphe */
 	int tabArete[ 100 ][ 100 ];/* Tableau pour stocker tous les aretes du graphe */
 	FILE *fichier = NULL;
-	graphe = malloc ( sizeof ( TypGraphe ) );
+	
 	tabSommet [ maxSommets ] = 0;/* Initialisation du tableau tabSommet */
 	memset ( *tabArete, 0, sizeof ( tabArete ) );/* Initialisation du tableau tabArete */
 	strcat ( chemin, nomFichier );
