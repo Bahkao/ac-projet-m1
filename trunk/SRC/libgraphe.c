@@ -68,7 +68,7 @@ int insertionSommet ( TypGraphe *graphe, int idSommet ) {
 		return GRAPHE_INEXISTANT;
 	}
 	
-	if( (idSommet >= 0 ) && ( idSommet <= graphe->nbrMaxSommets ) ) {
+	if( (idSommet > 0 ) && ( idSommet <= graphe->nbrMaxSommets ) ) {
 		if ( graphe->listesAdjacences[idSommet-1] == NULL ) {
             graphe->listesAdjacences[idSommet-1] = creerListe();
 			return 0;
@@ -189,6 +189,8 @@ int suppressionSommet ( TypGraphe* graphe, int sommet ) {
 int insertionAreteOriente ( TypGraphe* graphe, int depart, int arrivee, int poids ) {
 	if (graphe->listesAdjacences == NULL)
 		return GRAPHE_INEXISTANT;
+	else if (areteExistante(graphe,depart,arrivee) == 0)
+		return ARETE_EXISTANTE;
 	else {
 		if (sommetExistant(graphe,depart) == 0 && sommetExistant(graphe,arrivee) == 0) {
 			ajouterVoisin(&(graphe->listesAdjacences[depart-1]),arrivee,poids);
@@ -217,6 +219,8 @@ int insertionAreteOriente ( TypGraphe* graphe, int depart, int arrivee, int poid
 int insertionAreteNonOriente ( TypGraphe* graphe, int depart, int arrivee, int poids ) {
 	if (graphe->listesAdjacences == NULL)
 		return GRAPHE_INEXISTANT;
+	else if (areteExistante(graphe,depart,arrivee) == 0 || areteExistante(graphe,arrivee,depart) == 0)
+		return ARETE_EXISTANTE;
 	else {
 		if (sommetExistant(graphe,depart) == 0 && sommetExistant(graphe,arrivee) == 0) {
 			ajouterVoisin(&(graphe->listesAdjacences[depart-1]),arrivee,poids);
@@ -283,7 +287,8 @@ int suppressionArete ( TypGraphe* graphe, int depart, int arrivee, char orientat
  ********************************************************************************
  */
 void affichage ( TypGraphe* graphe ) {
-	int i;  /* Permet le parcours des listes du graphe */
+	int i;         /* Permet le parcours des listes du graphe */
+	char* chaine;  /* Chaîne où seront stockées les représentations des listes*/
 	
 	printf ( "# nombre maximum de sommets\n" );
 	printf ( "%d",graphe->nbrMaxSommets );
@@ -294,11 +299,14 @@ void affichage ( TypGraphe* graphe ) {
 		if (sommetExistant(graphe,i+1) == 0) {
 			printf ( "%d : ", i+1 );
 		    if ( graphe->listesAdjacences[i] != NULL ) {
-				printf("%s",toString(&(graphe->listesAdjacences[i])));
+				chaine = toString(&(graphe->listesAdjacences[i]));
+				printf("%s",chaine);
 		    }
 		    printf( "\n" );
 		}
 	} 
+	if (chaine != NULL
+	free(chaine);
 }
 
 
@@ -376,7 +384,7 @@ void deleteGraphe ( TypGraphe* graphe ) {
  */
 TypGraphe* lecture ( char nomFichier[80] ) {
 	TypGraphe* graphe;
-	char buffer[ 512 ],chemin[ 80 ] = "../ac-projet-m1/lecture/";
+	char buffer[ 512 ],chemin[ 80 ] = "lecture/";
 	int maxSommets = 0;
         int sommetCourant = 0;
         int vers = 0, poids = 0, m, i =0, k=0, t=0;

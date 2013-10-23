@@ -5,36 +5,65 @@
 #include "menu.h"
 #include "libgraphe.h"
 #include "libliste.h"
+#include "erreurs.h"
 
 
 TypGraphe* graphe;
 
+static void sous_menu();
+static void sousMenuAfficherGraphe();
+static void sousMenuInsererSommet();
+static void sousMenuInsererArete();
+static void sousMenuSupprimerSommet();
+static void sousMenuSupprimerArete();
+static void sousMenuSauvegarderGraphe();
+static void sousMenuChargerGraphe();
+static void sousMenuQuitter();
+static void cleanBuffer(const char *chaine);
+static void pause();
+
 
 void menu_principale (){
-	char chaine[3];
-	int tmp;
+	int nbSommets;
 	int choix;
+	char ligne[201];
+	int compte;
+	char ligneNbSommets[11];
+	char chemin[201];
 	
 	printf(  "##########################################\n" );
-    printf(  "#             MENU PRINCIPALE            #\n" );
+    printf(  "#             MENU PRINCIPAL             #\n" );
     printf(  "##########################################\n" );
-	printf(  "#	1 : Creer un nouveau graphe       #\n");
+	printf(  "#	1 : Créer un nouveau graphe       #\n");
 	printf(  "#	2 : Charger le graphe             #\n");
 	printf(  "#	3 : Quitter                       #\n");
 	printf(  "##########################################\n" );
-	printf(  "Faites un choix\n");
-	scanf("%d",&choix);
+	
+	do {
+		printf("Faites un choix: ");
+		fgets(ligne,2,stdin);
+		cleanBuffer(ligne);
+		compte = sscanf(ligne,"%d",&choix);
+	} while (compte != 1 || choix < 1 || choix > 3);
+	
 	switch (choix){
 		case 1 :
-			printf("Taper le nombre maximum de sommets:  \n");
-			scanf("%s",chaine);
-			sscanf(chaine,"%d",&tmp);
-			graphe = creerGraphe(tmp);
+			do {
+				printf("Tapez le nombre maximum de sommets (>= 1) : ");
+				fgets(ligneNbSommets,10,stdin);
+				cleanBuffer(ligneNbSommets);
+				compte = sscanf(ligneNbSommets,"%d",&nbSommets);
+			} while (compte != 1 || nbSommets <= 0);
+			graphe = creerGraphe(nbSommets);
+			printf("\nGraphe créé avec succès !\n");
 			sous_menu();
 			break;
 		case 2 : 
-			sousMenuChargerGraphe();
-            sous_menu();
+			printf("Saisissez le nom du fichier : ");
+			fgets(ligne,200,stdin);
+			sscanf(ligne,"%s",chemin);
+			graphe = lecture(chemin);
+			sous_menu();
 			break;
 		case 3 :
 			exit(0);
@@ -52,9 +81,12 @@ void menu_principale (){
  * Description		: affichage du sous menu
  ****************************************************
  */
-void sous_menu(){
+static void sous_menu(){
 	int choix;
+	char ligne[3];
+	int compte;
 	
+	printf("\n\n\n");
 	printf(  "##########################################\n" );
     printf(  "#                 SOUS MENU              #\n" );
     printf(  "##########################################\n" );
@@ -67,8 +99,14 @@ void sous_menu(){
 	printf(	 "#	7 : Charger le graphe             #\n");
 	printf(  "#	8 : Quitter                       #\n");
 	printf(  "##########################################\n" );
-	printf(" Faites un choix:\n ");
-	scanf("%d",&choix);
+	
+	do {
+		printf("Faites un choix: ");
+		fgets(ligne,2,stdin);
+		cleanBuffer(ligne);
+		compte = sscanf(ligne,"%d",&choix);
+	} while (compte != 1 || choix < 1 || choix > 8);
+	
 	switch (choix){
 	case 1 :
 		sousMenuAfficherGraphe();
@@ -92,119 +130,312 @@ void sous_menu(){
 		sousMenuChargerGraphe();
 		break;
 	case 8 :
-		deleteGraphe(graphe);
-		exit(0);
+		sousMenuQuitter();
 		break;
 	}
 	sous_menu();
 }
 
 
-void sousMenuAfficherGraphe() {
-	printf("Afficher le graphe\n ");
+static void sousMenuAfficherGraphe() {
+	printf("\n===Afficher le graphe ===\n\n");
 	affichage(graphe);
+	pause();
 }
 
-
-void sousMenuInsererSommet() {
-	char chaine[256];
+static void sousMenuInsererSommet() {
+	char ligne[11];
 	int numSommet;
+	int compte;
 
-	printf("Insérer un sommet\n");
-	printf("Saisir le numéro du sommet : ");
-	scanf("%s",chaine);
-	numSommet = atoi(chaine);
-	insertionSommet(graphe,numSommet);
+	printf("\n===Insérer un sommet ===\n\n");
+	
+	do {
+		printf("Saisissez le numéro du sommet : ");
+		fgets(ligne,10,stdin);
+		cleanBuffer(ligne);
+		compte = sscanf(ligne,"%d",&numSommet);
+	} while (compte != 1);
+	
+	/* Insertion du sommet si possible et traitement d'une éventuelle erreur */
+	switch(insertionSommet(graphe,numSommet)) {
+		case SOMMET_EXISTANT :
+			printf("Erreur : le sommet %d existe déjà dans le graphe\n",numSommet);
+			pause();
+			break;
+		case SOMMET_INVALIDE :
+			printf("Erreur : le sommet doit être compris entre 1 et %d\n",graphe->nbrMaxSommets);
+			pause();
+			break;
+		case 0 :
+			printf("Le sommet %d a bien été inséré dans le graphe.\n",numSommet);
+			pause();
+			break;
+	}
 }
 
 
-void sousMenuInsererArete() {
-	char chaine[256];
-	int areteOrientee;
+static void sousMenuInsererArete() {
+	char areteOrientee;
 	int sommetDepart;
 	int sommetArrivee;
 	int poidsArete;
+	char ligne[11];
+	int compte;
 
-	printf("Insérer une arête \n");
-	printf( "Est-ce une arête orientée ? \n 1-Oui 0-Non\n" );
-	scanf("%s",chaine);
-	areteOrientee = atoi(chaine);
-	printf("Saisissez le sommet de départ : ");
-	scanf("%s",chaine);
-	sommetDepart = atoi(chaine);
-	printf("Saisissez le sommet d'arrivée : ");
-	scanf("%s",chaine);
-	sommetArrivee = atoi(chaine);
-	printf("Saisissez le poids de l'arête : ");
-	scanf("%s",chaine);
-	poidsArete = atoi(chaine);
-	if (areteOrientee == 1)
-		insertionAreteOriente(graphe,sommetDepart,sommetArrivee,poidsArete);
-	else
-		insertionAreteNonOriente(graphe,sommetDepart,sommetArrivee,poidsArete);
-}
-
-
-void sousMenuSupprimerSommet() {
-	char chaine[256];
-	int numSommet;
-
-	printf("Supprimer un sommet\n");
-	printf("Entrer le sommet à supprimer : ");
-	scanf("%s",chaine);
-	numSommet = atoi(chaine);
-	suppressionSommet(graphe,numSommet);
-}
-
-
-void sousMenuSupprimerArete() {
-	char chaine[256];
-	int areteOrientee;
-	int sommetDepart;
-	int sommetArrivee;
-
-	printf("Supprimer une arête\n");
-	printf( "Est-ce une arête orientée ? \n 1-Oui 0-Non\n" );
-	scanf("%s",chaine);
-	areteOrientee = atoi(chaine);
-	printf("Insérer le sommet de départ : ");
-	scanf("%s",chaine);
-	sommetDepart = atoi(chaine);
-	printf("Insérer le sommet d'arrivée : ");
-	scanf("%s",chaine);
-	sommetArrivee = atoi(chaine);
-	if (areteOrientee == 1)
-		suppressionArete(graphe,sommetDepart,sommetArrivee,'o');
-	else
-		suppressionArete(graphe,sommetDepart,sommetArrivee,'n');
-}
-
-
-void sousMenuSauvegarderGraphe() {
-	char chemin[256];
-	char cheminSauvegarde[80] = "../ac-projet-m1/lecture/";
-	FILE* fichier;
-
-	printf("Sauvegarder le graphe\n");
-	if (graphe != NULL) {
-		printf("saisir le nom de fichier: \n");
-		scanf("%s",chemin);
-		strcat(cheminSauvegarde,chemin);
-		fichier = fopen( cheminSauvegarde, "w" );
-		sauvegarde(graphe,fichier);
-		fclose( fichier );
+	printf("\n=== Insérer une arête ===\n\n");
+	
+	do {
+		printf( "Est-ce une arête orientée ? (o/n) " );
+		fgets(ligne,2,stdin);
+		cleanBuffer(ligne);
+		compte = sscanf(ligne,"%c",&areteOrientee);
+	} while (compte != 1 || (areteOrientee != 'o' && areteOrientee != 'n'));
+	
+	do {
+		printf("Saisissez le sommet de départ : ");
+		fgets(ligne,10,stdin);
+		cleanBuffer(ligne);
+		compte = sscanf(ligne,"%d",&sommetDepart);
+	} while (compte != 1);
+	
+	do {
+		printf("Saisissez le sommet d'arrivée : ");
+		fgets(ligne,10,stdin);
+		cleanBuffer(ligne);
+		compte = sscanf(ligne,"%d",&sommetArrivee);
+	} while (compte != 1);
+	
+	do {
+		printf("Saisissez le poids de l'arête : ");
+		fgets(ligne,10,stdin);
+		cleanBuffer(ligne);
+		compte = sscanf(ligne,"%d",&poidsArete);
+	} while (compte != 1);
+	
+	if (areteOrientee == 'o') {
+		switch (insertionAreteOriente(graphe,sommetDepart,sommetArrivee,poidsArete)) {
+			case SOMMET_INEXISTANT :
+				printf("Erreur : un des sommets entrés n'existe pas dans le graphe\n");
+				pause();
+				break;
+			case ARETE_EXISTANTE :
+				printf("Erreur : l'arête demandée existe déjà dans le graphe\n");
+				pause();
+				break;
+			case 0 :
+				printf("L'arête (%d,%d) a bien été insérée dans le graphe\n",sommetDepart,sommetArrivee);
+				pause();
+				break;
+		}
 	}
 	else {
-		printf( "Pas de graphe en cours\n" );
+		switch (insertionAreteNonOriente(graphe,sommetDepart,sommetArrivee,poidsArete)) {
+			case SOMMET_INEXISTANT :
+				printf("Erreur : un des sommets entrés n'existe pas dans le graphe\n");
+				pause();
+				break;
+			case ARETE_EXISTANTE :
+				printf("Erreur : l'arête demandée existe déjà dans le graphe\n");
+				pause();
+				break;
+			case 0 :
+				printf("L'arête non orientée (%d,%d) a bien été insérée dans le graphe\n",sommetDepart,sommetArrivee);
+				pause();
+				break;
+		}
 	}
 }
 
 
-void sousMenuChargerGraphe() {
-	char chemin[512];
+static void sousMenuSupprimerSommet() {
+	int numSommet;
+	char ligne[11];
+	int compte;
 
-	printf( "Entrer le nom du fichier\n" );
-	scanf("%s",chemin);
-	printf("%s",chemin);
-	graphe = lecture(chemin);
+	printf("\n=== Supprimer un sommet ===\n\n");
+	
+	do {
+		printf("Entrez le sommet à supprimer : ");
+		fgets(ligne,10,stdin);
+		cleanBuffer(ligne);
+		compte = sscanf(ligne,"%d",&numSommet);
+	} while (compte != 1);
+	
+	switch (suppressionSommet(graphe,numSommet)) {
+		case SOMMET_INEXISTANT :
+			printf("Erreur : le sommet %d n'existe pas dans le graphe\n",numSommet);
+			pause();
+			break;
+		case 0 :
+			printf("Le sommet %d a bien été supprimé du graphe\n",numSommet);
+			pause();
+			break;
+	}
+}
+
+
+static void sousMenuSupprimerArete() {
+	char areteOrientee;
+	int sommetDepart;
+	int sommetArrivee;
+	char ligne[11];
+	int compte;
+
+	printf("\n=== Supprimer une arête ===\n\n");
+	
+	do {
+		printf( "Est-ce une arête orientée ? (o/n) " );
+		fgets(ligne,2,stdin);
+		cleanBuffer(ligne);
+		compte = sscanf(ligne,"%c",&areteOrientee);
+	} while (compte != 1 || areteOrientee != 'o' || areteOrientee != 'n');
+	
+	do {
+		printf("Saisissez le sommet de départ : ");
+		fgets(ligne,10,stdin);
+		cleanBuffer(ligne);
+		compte = sscanf(ligne,"%d",&sommetDepart);
+	} while (compte != 1);
+	
+	do {
+		printf("Saisissez le sommet d'arrivée : ");
+		fgets(ligne,10,stdin);
+		cleanBuffer(ligne);
+		compte = sscanf(ligne,"%d",&sommetArrivee);
+	} while (compte != 1);
+	
+	if (areteOrientee == 'o') {
+		switch (suppressionArete(graphe,sommetDepart,sommetArrivee,'o')) {
+			case SOMMET_INEXISTANT :
+				printf("Erreur : un des sommets entrés n'existe pas dans le graphe\n");
+				pause();
+				break;
+			case ARETE_INEXISTANTE :
+				printf("Erreur : l'arête demandée n'existe pas dans le graphe\n");
+				pause();
+				break;
+			case 0 :
+				printf("L'arête (%d,%d) a bien été supprimée du graphe\n",sommetDepart,sommetArrivee);
+				pause();
+				break;
+		}
+	}
+	else {
+		switch (suppressionArete(graphe,sommetDepart,sommetArrivee,'n')) {
+			case SOMMET_INEXISTANT :
+				printf("Erreur : un des sommets entrés n'existe pas dans le graphe\n");
+				pause();
+				break;
+			case ARETE_INEXISTANTE :
+				printf("Erreur : l'arête demandée n'existe pas dans le graphe\n");
+				pause();
+				break;
+			case 0 :
+				printf("L'arête non orientée (%d,%d) a bien été supprimée du graphe\n",sommetDepart,sommetArrivee);
+				pause();
+				break;
+		}
+	}
+}
+
+
+static void sousMenuSauvegarderGraphe() {
+	char chemin[201];
+	char ligne[201];
+	char cheminSauvegarde[250] = "lecture/";
+	FILE* fichier;
+
+	printf("\n=== Sauvegarder le graphe ===\n\n");
+
+	printf("Saisissez le nom du fichier : ");
+	fgets(ligne,200,stdin);
+	sscanf(ligne,"%s",chemin);
+	strcat(cheminSauvegarde,chemin);
+	
+	fichier = fopen(cheminSauvegarde,"w");
+	if (fichier != NULL) {
+		sauvegarde(graphe,fichier);
+		if (fclose(fichier) != EOF) {
+			printf("Le graphe a été sauvegardé avec succès.\n");
+			pause();
+		}
+		else {
+			printf("Erreur lors de la fermeture du fichier.\n");
+			pause();
+		}
+	}
+	else {
+		printf("Erreur lors de l'ouverture du fichier.\n");
+		pause();
+	}
+}
+
+
+static void sousMenuChargerGraphe() {
+	char chemin[201];
+	char ligne[201];
+	char continuer;
+	int compte;
+	
+	printf("\n=== Charger un graphe ===\n\n");
+	
+	printf("Attention, le graphe en cours sera supprimé\n");
+	do {
+		printf("Etes-vous sûr de vouloir charger un autre graphe ? (o/n) ");
+		fgets(ligne,2,stdin);
+		cleanBuffer(ligne);
+		compte = sscanf(ligne,"%c",&continuer);
+	} while (compte != 1 || (continuer != 'o' && continuer != 'n'));
+	
+	if (continuer == 'o') {
+		deleteGraphe(graphe);
+		printf("Saisissez le nom du fichier : ");
+		fgets(ligne,200,stdin);
+		sscanf(ligne,"%s",chemin);
+		graphe = lecture(chemin);
+	}
+}
+
+
+static void sousMenuQuitter() {
+	char ligne[3];
+	char continuer;
+	int compte;
+
+	printf("Attention, le graphe en cours sera supprimé\n");
+	do {
+		printf("Etes-vous sûr de vouloir quitter ? (o/n) ");
+		fgets(ligne,2,stdin);
+		cleanBuffer(ligne);
+		compte = sscanf(ligne,"%c",&continuer);
+	} while (compte != 1 || (continuer != 'o' && continuer != 'n'));
+	
+	if (continuer == 'o') {
+		deleteGraphe(graphe);
+		exit(0);
+	}
+}
+
+
+/* Vide le buffer du clavier si nécessaire */
+static void cleanBuffer (const char *chaine) {
+    char *p = strchr(chaine, '\n');
+	int c;
+ 
+    if (p) {
+        p = NULL;
+    }
+    else {
+        while ((c = getchar()) != '\n' && c != EOF);
+    }
+}
+
+
+static void pause() {
+	int c;
+	
+	printf("\nAppuyez sur Entrer pour continuer\n");
+	/* pour faire une pause puis vider le buffer */
+	while ((c = getchar()) != '\n' && c != EOF);
 }
