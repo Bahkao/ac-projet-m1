@@ -289,7 +289,7 @@ static void sousMenuSupprimerArete() {
 		fgets(ligne,2,stdin);
 		cleanBuffer(ligne);
 		compte = sscanf(ligne,"%c",&areteOrientee);
-	} while (compte != 1 || areteOrientee != 'o' || areteOrientee != 'n');
+	} while (compte != 1 || (areteOrientee != 'o' && areteOrientee != 'n'));
 	
 	do {
 		printf("Saisissez le sommet de départ : ");
