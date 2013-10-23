@@ -1,7 +1,21 @@
+/*
+******************************************************************************
+*
+* Programme : menu.c
+*
+* Auteurs : Christophe SAUVAGE et Mustafa NDIAYE
+*
+* Résumé : Affichage et gestion du menu du programme
+*
+* Date : 23/10/2013
+*
+******************************************************************************
+*/
+
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <malloc.h>
 #include "menu.h"
 #include "libgraphe.h"
 #include "libliste.h"
@@ -9,6 +23,7 @@
 
 
 TypGraphe* graphe;
+
 
 static void sous_menu();
 static void sousMenuAfficherGraphe();
@@ -23,20 +38,24 @@ static void cleanBuffer(const char *chaine);
 static void pause();
 
 
+	/*
+	* Fonction : menu_principale
+	*
+	* Description : Affiche le premier menu du programme
+	*/
 void menu_principale (){
-	int nbSommets;
-	int choix;
-	char ligne[201];
-	int compte;
-	char ligneNbSommets[11];
-	char chemin[201];
+	int nbSommets;     /* Nombre max de sommets que pourra contenir le graphe */
+	int choix;         /* Choix de l'utilisateur dans le menu */
+	char ligne[201];   /* Contient l'entrée au clavier de l'utilisateur */
+	int compte;        /* Permet de vérifier le retour de sscanf */
+	char chemin[201];  /* Chemin vers un fichier à charger */
 	
 	printf(  "##########################################\n" );
-    printf(  "#             MENU PRINCIPAL             #\n" );
-    printf(  "##########################################\n" );
-	printf(  "#	1 : Créer un nouveau graphe       #\n");
-	printf(  "#	2 : Charger le graphe             #\n");
-	printf(  "#	3 : Quitter                       #\n");
+	printf(  "#             MENU PRINCIPAL             #\n" );
+	printf(  "##########################################\n" );
+	printf(  "#	1 : Créer un nouveau graphe      #\n");
+	printf(  "#	2 : Charger le graphe            #\n");
+	printf(  "#	3 : Quitter                      #\n");
 	printf(  "##########################################\n" );
 	
 	do {
@@ -50,9 +69,9 @@ void menu_principale (){
 		case 1 :
 			do {
 				printf("Tapez le nombre maximum de sommets (>= 1) : ");
-				fgets(ligneNbSommets,10,stdin);
-				cleanBuffer(ligneNbSommets);
-				compte = sscanf(ligneNbSommets,"%d",&nbSommets);
+				fgets(ligne,10,stdin);
+				cleanBuffer(ligne);
+				compte = sscanf(ligne,"%d",&nbSommets);
 			} while (compte != 1 || nbSommets <= 0);
 			graphe = creerGraphe(nbSommets);
 			printf("\nGraphe créé avec succès !\n");
@@ -71,6 +90,7 @@ void menu_principale (){
 	}
 }
 
+
 /****************************************************
  * Fonction   		:sous_menu
  *
@@ -82,9 +102,9 @@ void menu_principale (){
  ****************************************************
  */
 static void sous_menu(){
-	int choix;
-	char ligne[3];
-	int compte;
+	int choix;      /* Choix de l'utilisateur dans le menu */
+	char ligne[3];  /* Contient l'entrée au clavier de l'utilisateur */
+	int compte;     /* Permet de vérifier le retour de sscanf */
 	
 	printf("\n\n\n");
 	printf(  "##########################################\n" );
@@ -137,16 +157,27 @@ static void sous_menu(){
 }
 
 
+	/*
+	* Fonction : sousMenuAfficherGraphe
+	*
+	* Description : Permet de demander l'affichage du graphe
+	*/
 static void sousMenuAfficherGraphe() {
 	printf("\n===Afficher le graphe ===\n\n");
 	affichage(graphe);
 	pause();
 }
 
+
+	/*
+	* Fonction : sousMenuInsererSommet
+	*
+	* Description : Permet de demander l'insertion d'un sommet dans le graphe
+	*/
 static void sousMenuInsererSommet() {
-	char ligne[11];
-	int numSommet;
-	int compte;
+	char ligne[11];  /* Contient l'entrée au clavier de l'utilisateur */
+	int numSommet;   /* Sommet à insérer */
+	int compte;      /* Permet de vérifier le retour de sscanf */
 
 	printf("\n===Insérer un sommet ===\n\n");
 	
@@ -175,13 +206,18 @@ static void sousMenuInsererSommet() {
 }
 
 
+	/*
+	* Fonction : sousMenuInsererArete
+	*
+	* Description : Permet de demander l'insertion d'une arête dans le graphe
+	*/
 static void sousMenuInsererArete() {
-	char areteOrientee;
-	int sommetDepart;
-	int sommetArrivee;
-	int poidsArete;
-	char ligne[11];
-	int compte;
+	char areteOrientee; /* 'o' : arête orientée ; 'n' : arête non orientée */
+	int sommetDepart;   /* Sommet de départ de l'arête */
+	int sommetArrivee;  /* Sommet d'arrivée de l'arête */
+	int poidsArete;     /* Poids de l'arête */
+	char ligne[11];     /* Contient l'entrée au clavier de l'utilisateur */
+	int compte;         /* Permet de vérifier le retour de sscanf */
 
 	printf("\n=== Insérer une arête ===\n\n");
 	
@@ -248,10 +284,15 @@ static void sousMenuInsererArete() {
 }
 
 
+	/*
+	* Fonction : sousMenuSupprimerSommet
+	*
+	* Description : Permet de demander la suppression d'un sommet du graphe
+	*/
 static void sousMenuSupprimerSommet() {
-	int numSommet;
-	char ligne[11];
-	int compte;
+	int numSommet;   /* Sommet à supprimer */
+	char ligne[11];  /* Contient l'entrée au clavier de l'utilisateur */
+	int compte;      /* Permet de vérifier le retour de sscanf */
 
 	printf("\n=== Supprimer un sommet ===\n\n");
 	
@@ -275,12 +316,17 @@ static void sousMenuSupprimerSommet() {
 }
 
 
+	/*
+	* Fonction : sousMenuSupprimerArete
+	*
+	* Description : Permet de demander la suppression d'une arête du graphe
+	*/
 static void sousMenuSupprimerArete() {
-	char areteOrientee;
-	int sommetDepart;
-	int sommetArrivee;
-	char ligne[11];
-	int compte;
+	char areteOrientee;  /* 'o' : arête orientée ; 'n' : arête non orientée */
+	int sommetDepart;    /* Sommet de départ de l'arête */
+	int sommetArrivee;   /* Sommet d'arrivée de l'arête */
+	char ligne[11];      /* Contient l'entrée au clavier de l'utilisateur */
+	int compte;          /* Permet de vérifier le retour de sscanf */
 
 	printf("\n=== Supprimer une arête ===\n\n");
 	
@@ -340,10 +386,15 @@ static void sousMenuSupprimerArete() {
 }
 
 
+	/*
+	* Fonction : sousMenuSauvegarderGraphe
+	*
+	* Description : Permet de demander la sauvegarde du graphe dans un fichier
+	*/
 static void sousMenuSauvegarderGraphe() {
-	char chemin[201];
-	char ligne[201];
-	char cheminSauvegarde[250] = "lecture/";
+	char chemin[201];  /* Nom du fichier à créer */
+	char ligne[201];   /* Contient l'entrée au clavier de l'utilisateur */
+	char cheminSauvegarde[250] = "lecture/";  /* Où est sauvegardé le graphe */
 	FILE* fichier;
 
 	printf("\n=== Sauvegarder le graphe ===\n\n");
@@ -372,11 +423,16 @@ static void sousMenuSauvegarderGraphe() {
 }
 
 
+	/*
+	* Fonction : sousMenuChargerGraphe
+	*
+	* Description : Permet de demander le chargement d'un graphe depuis un fichier
+	*/
 static void sousMenuChargerGraphe() {
-	char chemin[201];
-	char ligne[201];
-	char continuer;
-	int compte;
+	char chemin[201];  /* Nom du fichier à charger */
+	char ligne[201];   /* Contient l'entrée au clavier de l'utilisateur */
+	char continuer;    /* 'o' : continuer l'opération en cours, sinon 'n' */
+	int compte;        /* Permet de vérifier le retour de sscanf */
 	
 	printf("\n=== Charger un graphe ===\n\n");
 	
@@ -398,10 +454,15 @@ static void sousMenuChargerGraphe() {
 }
 
 
+	/*
+	* Fonction : sousMenuQuitter
+	*
+	* Description : Permet de quitter le programme
+	*/
 static void sousMenuQuitter() {
-	char ligne[3];
-	char continuer;
-	int compte;
+	char ligne[3];   /* Contient l'entrée au clavier de l'utilisateur */
+	char continuer;  /* 'o' : continuer l'opération en cours, sinon 'n' */
+	int compte;      /* Permet de vérifier le retour de sscanf */
 
 	printf("Attention, le graphe en cours sera supprimé\n");
 	do {
@@ -418,11 +479,19 @@ static void sousMenuQuitter() {
 }
 
 
-/* Vide le buffer du clavier si nécessaire */
+	/*
+	* Fonction : cleanBuffer
+	*
+	* Paramètre : char* chaine, une chaine dans laquelle on vient d'écrire
+	*
+	* Description : Permet de supprimer le buffer du clavier après une entrée au
+	*				clavier de l'utilisateur dans la console.
+	*/
 static void cleanBuffer (const char *chaine) {
-    char *p = strchr(chaine, '\n');
+    char *p;  /* Pointeur sur le "\n" de chaine s'il existe */
 	int c;
- 
+
+	p = strchr(chaine,'\n');
     if (p) {
         p = NULL;
     }
@@ -432,6 +501,12 @@ static void cleanBuffer (const char *chaine) {
 }
 
 
+	/*
+	* Fonction : pause
+	*
+	* Description : Permet de mettre le programme en pause.
+	*				Attend que l'utilisateur appuie sur Entrée.
+	*/
 static void pause() {
 	int c;
 	
