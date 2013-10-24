@@ -376,7 +376,6 @@ void deleteGraphe ( TypGraphe* graphe ) {
  *	Fonction:	lecture
  *
  *	Paramettre :	char nomFichier[80] : est un tableau de caractére représentant le nom du fichier
- *			FILE *fichier	   : est un pointeur sur FILE
  *
  *	Retour:		graphe
  *
@@ -386,13 +385,10 @@ void deleteGraphe ( TypGraphe* graphe ) {
 TypGraphe* lecture ( char nomFichier[80] ) {
 	TypGraphe* graphe;
 	char buffer[ 512 ],chemin[ 80 ] = "lecture/";
-	int maxSommets = 0;
-    int sommetCourant = 0;
-    int vers = 0, poids = 0, m, i =0, k=0, t=0;
+	int maxSommets = 0, sommetCourant = 0, vers = 0, poids = 0, m, i =0, k=0, t=0;
 	int tabSommet[ 100 ]; /* Tableau pour stocker tous les sommets du graphe */
 	int tabArete[ 100 ][ 100 ];/* Tableau pour stocker tous les aretes du graphe */
 	FILE *fichier = NULL;
-	
 	tabSommet [ maxSommets ] = 0;/* Initialisation du tableau tabSommet */
 	memset ( *tabArete, 0, sizeof ( tabArete ) );/* Initialisation du tableau tabArete */
 	strcat ( chemin, nomFichier );
@@ -423,13 +419,7 @@ TypGraphe* lecture ( char nomFichier[80] ) {
 								tabArete[ k ][ 2 ] = poids;
 								k++;	
 							}
-							else {
-								printf ( "erreur dans le fichier 1\n" );	
-							}
 						}
-					}
-					else{
-						printf ( "erreur dans le fichier 2\n" );	
 					}
 				}
 				for ( t = 0; t < i; t++ ) {
@@ -449,10 +439,7 @@ TypGraphe* lecture ( char nomFichier[80] ) {
 		
 		fclose ( fichier );
 	}
-	
-	
 	return graphe;
-	
 }
 
 
