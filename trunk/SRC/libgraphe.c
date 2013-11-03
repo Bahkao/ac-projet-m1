@@ -375,15 +375,15 @@ void deleteGraphe ( TypGraphe* graphe ) {
  *******************************************************************************
  *	Fonction:	lecture
  *
- *	Paramettre :	char nomFichier[80] : est un tableau de caractére représentant le nom du fichier
+ *	Paramètres : TypGraphe** graphe, le graphe à créer depuis le chargement du fichier
+*				char nomFichier[80] : est un tableau de caractére représentant le nom du fichier
  *
- *	Retour:		graphe
+ *	Retour:		0 si tout se passe bien, sinon un code d'erreur
  *
  *	Description:	lecture d'un graphe à partir d'un fichier
  ********************************************************************************
  */
-TypGraphe* lecture ( char nomFichier[80] ) {
-	TypGraphe* graphe;
+int lecture (TypGraphe** graphe, char nomFichier[80]) {
 	char buffer[ 512 ],chemin[ 80 ] = "lecture/";
 	int maxSommets = 0, sommetCourant = 0, vers = 0, poids = 0, m, i =0, k=0, t=0;
 	int tabSommet[ 100 ]; /* Tableau pour stocker tous les sommets du graphe */
@@ -392,17 +392,15 @@ TypGraphe* lecture ( char nomFichier[80] ) {
 	tabSommet [ maxSommets ] = 0;/* Initialisation du tableau tabSommet */
 	memset ( *tabArete, 0, sizeof ( tabArete ) );/* Initialisation du tableau tabArete */
 	strcat ( chemin, nomFichier );
-	printf ( "%s", chemin );
 	fichier = fopen ( chemin, "r+" );/*Ouverture du fichier en mode lecture*/
-	printf ( "%s", chemin );
 	if ( fichier == NULL ) {
-		printf ( "Erreur d'ouverture du fichier\n" );
+		return ERREUR_FICHIER;
 	}
 	else {
 		if ( fgets ( buffer, 512, fichier ) != NULL ) {
 			fscanf ( fichier, "%d", &maxSommets );/*récupération du nombre max de sommet*/
 			if ( maxSommets > 0 ) {
-				graphe = creerGraphe(maxSommets );/* Création du graphe si le nbrSommet est positif*/
+				*graphe = creerGraphe(maxSommets );/* Création du graphe si le nbrSommet est positif*/
 				fgets ( buffer, 512, fichier );
 				fgets ( buffer, 512, fichier );
 				while ( !feof ( fichier ) ) {/* parcours du fichier pour récupérer les sommet et les arêtes */
@@ -423,10 +421,10 @@ TypGraphe* lecture ( char nomFichier[80] ) {
 					}
 				}
 				for ( t = 0; t < i; t++ ) {
-					m = insertionSommet ( graphe, tabSommet[ t ] );/* Insertion des sommets dans le graphe*/	
+					m = insertionSommet ( *graphe, tabSommet[ t ] );/* Insertion des sommets dans le graphe*/	
 				}
 				for ( t = 0; t < k; t++ ) {
-					m = insertionAreteOriente ( graphe, tabArete[ t ][ 0 ],tabArete[ t ][ 1 ], tabArete[ t ][ 2 ] );
+					m = insertionAreteOriente ( *graphe, tabArete[ t ][ 0 ],tabArete[ t ][ 1 ], tabArete[ t ][ 2 ] );
 				}	
 			}
 			else{
@@ -438,8 +436,8 @@ TypGraphe* lecture ( char nomFichier[80] ) {
 		}
 		
 		fclose ( fichier );
+		return 0;
 	}
-	return graphe;
 }
 
 
