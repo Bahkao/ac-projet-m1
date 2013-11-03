@@ -15,28 +15,28 @@ typedef struct TypGraphe{
 
 TypGraphe* creerGraphe(int);
 
-int insertionSommet ( TypGraphe *graphe, int idSommet );
+int insertionSommet(TypGraphe *graphe, int idSommet );
 
-int suppressionSommet ( TypGraphe*, int);
+int suppressionSommet(TypGraphe*, int);
 
-int insertionAreteOriente ( TypGraphe*, int, int, int);
+int insertionAreteOriente(TypGraphe*, int, int, int);
 
-int insertionAreteNonOriente ( TypGraphe*, int, int, int);
+int insertionAreteNonOriente(TypGraphe*, int, int, int);
 
-int suppressionArete ( TypGraphe*, int, int, char);
+int suppressionArete(TypGraphe*, int, int, char);
 
-int sommetExistant (TypGraphe*,int);
+int sommetExistant(TypGraphe*,int);
 
-int areteExistante (TypGraphe*,int,int);
+int areteExistante(TypGraphe*,int,int);
 
-void deleteGraphe ( TypGraphe* );
+void deleteGraphe(TypGraphe*);
 
-void affichage ( TypGraphe*);
+void affichage(TypGraphe*);
 
-void sauvegarde (TypGraphe*,FILE *);
+void sauvegarde(TypGraphe*,FILE *);
 
-TypGraphe* lecture ( char[]);
+int lecture(TypGraphe**,char[]);
 
-int degreSommet(TypGraphe* graphe, int sommet);
+int degreSommet(TypGraphe*, int);
 
 #endif

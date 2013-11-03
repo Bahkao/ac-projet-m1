@@ -81,8 +81,13 @@ void menu_principale (){
 			printf("Saisissez le nom du fichier : ");
 			fgets(ligne,200,stdin);
 			sscanf(ligne,"%s",chemin);
-			graphe = lecture(chemin);
-			sous_menu();
+			if (lecture(&graphe,chemin) == ERREUR_FICHIER) {
+				printf("Erreur lors de l'ouverture du fichier : vérifiez son existence et s'il vous est accessible en droits.\n");
+				pause();
+				menu_principale();
+			}
+			else
+				sous_menu();
 			break;
 		case 3 :
 			exit(0);
@@ -433,6 +438,7 @@ static void sousMenuChargerGraphe() {
 	char ligne[201];   /* Contient l'entrée au clavier de l'utilisateur */
 	char continuer;    /* 'o' : continuer l'opération en cours, sinon 'n' */
 	int compte;        /* Permet de vérifier le retour de sscanf */
+	int codeLecture;       /* Code de renvoi de la fonction lecture() */
 	
 	printf("\n=== Charger un graphe ===\n\n");
 	
@@ -446,10 +452,16 @@ static void sousMenuChargerGraphe() {
 	
 	if (continuer == 'o') {
 		deleteGraphe(graphe);
-		printf("Saisissez le nom du fichier : ");
-		fgets(ligne,200,stdin);
-		sscanf(ligne,"%s",chemin);
-		graphe = lecture(chemin);
+		do {
+			printf("Saisissez le nom du fichier : ");
+			fgets(ligne,200,stdin);
+			sscanf(ligne,"%s",chemin);
+			codeLecture = lecture(&graphe,chemin);
+			if (codeLecture == ERREUR_FICHIER) {
+				printf("Erreur lors de l'ouverture du fichier : vérifiez son existence et s'il vous est accessible en droits.\n");
+			}
+		}
+		while (codeLecture == ERREUR_FICHIER);
 	}
 }
 
